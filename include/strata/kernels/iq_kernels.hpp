@@ -44,6 +44,10 @@ struct NativeExpertLayout {
     size_t gu_row = 0, d_row = 0;       // bytes per row
     size_t up_off = 0, down_off = 0;    // byte offsets inside the blob
     size_t bytes = 0;                   // the whole blob
+    // APR (prism.hadamard): the down weights are Hadamard-folded, so native_expert_grouped rotates h before
+    // quantizing it (hadamard_rows).  had_block 0 = none; d_signs is a DEVICE vector of n_ff signs or nullptr.
+    int had_block = 0;
+    const float* d_signs = nullptr;
 };
 NativeExpertLayout native_expert_layout(int gu_type, int d_type, int64_t n_embd, int64_t n_ff);
 /// Whether `native_expert_grouped` has kernels for this gate/up and down type pair at these dimensions, and the
@@ -71,6 +75,16 @@ void native_grouped_set_v1(bool v1);
 /// The bench only: the AMD kernel layout (STRATA_EXP_MODE values; -1 = the environment's) and the phase
 /// (0 all, 1 gate/up + SwiGLU + quantize, 2 down).
 void native_expert_set_mode(int mode, int phase);
+
+/// APR (prism.hadamard): y = H_block (signs * x) per block of `block` values of each of `rows` rows of `width`
+/// (x == y allowed).  `signs`: a device vector of `width` signs, or nullptr (identity).  The same floats as the CPU's
+/// hadamard_rotate.  The f16 form rotates in place, computing in float.
+void hadamard_rows(const float* x, float* y, int64_t rows, int64_t width, int block, const float* signs, void* stream);
+void hadamard_rows_f16(uint16_t* x, int64_t rows, int64_t width, int block, const float* signs, void* stream);
+/// A device copy (on the current device) of the host sign vector `host` of `width` signs, made on first use and
+/// kept for the process.  Call it at setup, not inside a CUDA graph capture.  nullptr for a nullptr `host`.
+const float* hadamard_device_signs(const float* host, int width);
+
 /// `iq_mmvq` and `native_expert_grouped` decode each weight part once and apply it to every column / entry;
 /// true selects the older kernels that decode it again per column (STRATA_OLD_IQ_MMVQ=1 at startup).  Both give
 /// bitwise the same results.  Set before graph capture; captured graphs keep the kernels they captured.

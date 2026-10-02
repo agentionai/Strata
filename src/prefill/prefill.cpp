@@ -836,6 +836,8 @@ const MmqPlan& mmq_plan() {
                 if (on && lay.native && fused::native_supported(gt, dt)) { p.fo[(size_t) l] = 1; p.any = true; }
                 continue;
             }
+            // APR (prism.hadamard): folded layers rotate their activations on the FP16 path only
+            if (lay.native && (lay.fmt[(size_t) l].had_gu || lay.fmt[(size_t) l].had_d)) { p.fallback = true; continue; }
             p.layer[(size_t) l] = 1;
             p.any = true;
             p.gu_max = std::max(p.gu_max, mmq::matrix_bytes(gt, 1280, N));
@@ -2593,7 +2595,14 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
                     // keep MMQ; without the variable nothing here runs.  A native pack's layer takes the native kernels
                     // (moe_fused_iq.hpp) where they cover its two formats, else MMQ (or the FP16 path: IQ1_M).
                     const strata::kernels::cpu::ExpertLayout& lay = strata::kernels::cpu::expert_layout();
-                    const bool use_mmq = mmq_plan().any && mmq_plan().layer[(size_t) l];
+                    // APR (prism.hadamard): the rotation is applied on the FP16 path only, so a folded layer never
+                    // takes MMQ (nor the fused kernels or the peer, which need MMQ)
+                    const bool had_gu = lay.native && lay.fmt[(size_t) l].had_gu;
+                    const bool had_d = lay.native && lay.fmt[(size_t) l].had_d;
+                    const bool use_mmq = mmq_plan().any && mmq_plan().layer[(size_t) l];   // never for a folded layer
+                    const int had_block = lay.native ? lay.fmt[(size_t) l].had_block : 0;
+                    const float* had_sx = had_gu ? strata::kernels::hadamard_device_signs(lay.fmt[(size_t) l].gu_signs, N) : nullptr;
+                    const float* had_sh = had_d ? strata::kernels::hadamard_device_signs(lay.fmt[(size_t) l].d_signs, 640) : nullptr;
                     const int mmq_gt = lay.native ? lay.fmt[(size_t) l].gu_type : 42;
                     const int mmq_dt = lay.native ? lay.fmt[(size_t) l].d_type : 42;
                     // --peer-device: MMQ only, whether or not the peer took the prompt path (set_peer can decline), as
@@ -2925,6 +2934,8 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
                             }
                         } else {
                             gather_rows16(m.mixed_h, m.src_dev, m.Xs, T * K, N, m.cs);
+                            // APR: Hadamard-folded gate/up take H (s * x); Xs is this layer's private gathered copy
+                            if (had_gu) strata::kernels::hadamard_rows_f16(m.Xs, T * K, N, had_block, had_sx, m.cs);
                         }
                         // multi-GPU: the peer's share, enqueued before the primary's own experts so both cards work at once
                         peer_now = use_mmq && !order_peer.empty();
@@ -3282,6 +3293,7 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
                             pt.mark(kPfGemmGU, cs);
                             m.gemm.f16(m.Xs + o0 * N, m.dq_gu[q], m.GU + o0 * 1280, ne, 1280, N);
                             swiglu_interleaved(m.GU + o0 * 1280, m.Hh + o0 * 640, ne, m.cs);
+                            if (had_d) strata::kernels::hadamard_rows_f16(m.Hh + o0 * 640, ne, 640, had_block, had_sh, m.cs);
                             pt.mark(kPfGemmD, cs);
                             m.gemm.f16(m.Hh + o0 * 640, m.dq_d[q], m.Dm + o0 * N, ne, N, 640);
                             return true;

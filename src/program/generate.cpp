@@ -2371,13 +2371,19 @@ int main(int argc, char** argv) {
                 return 1;
             }
         }
-        // APR (prism.hadamard) packs: the CPU pool rotates the expert activations (native_quant_act / _h), the GPU
-        // expert kernels, the remote GPUs and the prompt path do not yet.  Refused here
-        // rather than run with unrotated activations, which would produce plausible-looking garbage.
+        // APR (prism.hadamard) packs: every expert path rotates its activations (CPU pool: native_quant_act / _h;
+        // GPU verify, remote GPUs, prompt FP16 path: hadamard_rows), but the GPU side has been checked
+        // by native_expert_parity only, not end to end on a GPU: opt-in until it has (STRATA_APR=1).
         if (strata::kernels::cpu::hadamard_spec().any()) {
-            std::fprintf(stderr, "strata generate: this pack's experts are Hadamard-folded (hadamard.txt, an APR "
-                                 "model); the GPU expert paths cannot apply the activation rotation yet\n");
-            return 1;
+            const char* apr = std::getenv("STRATA_APR");
+            if (apr == nullptr || apr[0] != '1') {
+                std::fprintf(stderr, "strata generate: this pack's experts are Hadamard-folded (hadamard.txt, an APR "
+                                     "model), whose GPU path is not validated end to end yet; set STRATA_APR=1 to "
+                                     "run it anyway\n");
+                return 1;
+            }
+            std::fprintf(stderr, "strata generate: APR pack: Hadamard-folded experts (block %d), experimental\n",
+                         strata::kernels::cpu::hadamard_spec().block);
         }
     }
     const bool native_pack = strata::kernels::cpu::expert_layout().native;
