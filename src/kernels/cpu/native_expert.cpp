@@ -7,6 +7,7 @@
 #include "strata/kernels/cpu/iq_avx2.hpp"
 #include "strata/kernels/cpu/kq_avx2.hpp"
 #include "strata/kernels/cpu/expert_layout.hpp"
+#include "strata/kernels/cpu/hadamard.hpp"
 
 #include "ggml.h"
 #include "ggml-cpu.h"
@@ -14,6 +15,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <mutex>
+#include <vector>
 
 namespace strata::kernels::cpu {
 namespace {
@@ -80,11 +82,23 @@ bool q8k_avx2(int type) {
 }  // namespace
 
 void native_quant_act(const NativeFmt& f, const float* x, void* dst) {
+    if (f.had_gu) {   // Hadamard-folded gate/up: quantize H (s * x), never x itself (hadamard.hpp)
+        thread_local std::vector<float> tmp;
+        tmp.assign(x, x + f.n_embd);
+        hadamard_rotate(tmp.data(), (int) f.n_embd, f.had_block, f.gu_signs);
+        x = tmp.data();
+    }
     if (q8k_avx2(f.gu_act)) { q8k_quant_avx2(x, dst, f.n_embd); return; }
     traits(f.gu_act)->from_float(x, dst, f.n_embd);
 }
 
 void native_quant_h(const NativeFmt& f, const float* h, void* dst) {
+    if (f.had_d) {
+        thread_local std::vector<float> tmp;
+        tmp.assign(h, h + f.n_ff);
+        hadamard_rotate(tmp.data(), (int) f.n_ff, f.had_block, f.d_signs);
+        h = tmp.data();
+    }
     if (q8k_avx2(f.d_act)) { q8k_quant_avx2(h, dst, f.n_ff); return; }
     traits(f.d_act)->from_float(h, dst, f.n_ff);
 }
