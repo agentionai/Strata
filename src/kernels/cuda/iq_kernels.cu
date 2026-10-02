@@ -1477,6 +1477,9 @@ size_t iq_row_bytes(int t, int64_t n) noexcept {
         case 7: return (size_t) (n / 32) * sizeof(block_q5_1);
         case 8: return (size_t) (n / 32) * sizeof(block_q8_0);
         case 30: return (size_t) n * 2;   // BF16: the token embedding only (iq_embed_rows, iq_dequant_f32)
+        case 144: return (size_t) (n / 128) * sizeof(block_tq2_t);   // APR trellis types
+        case 145: return (size_t) (n / 128) * sizeof(block_tqk6);
+        case 146: return (size_t) (n / 128) * sizeof(block_tqk7);
         default: return 0;
     }
 }
@@ -1585,7 +1588,8 @@ const float* hadamard_device_signs(const float* host, int width) {
 
 bool native_expert_supported(int gu_type, int d_type, int64_t n_embd, int64_t n_ff) noexcept {
     const int qg = gu_qk(gu_type), qd = d_qk(d_type);
-    return qg > 0 && qd > 0 && is_iq(gu_type) && is_iq(d_type) && n_embd % qg == 0 && n_ff % qd == 0 &&
+    // a type without row bytes would make every row (and the up/down offsets) 0: refused, not run wrong
+    return qg > 0 && qd > 0 && iq_row_bytes(gu_type, n_embd) > 0 && iq_row_bytes(d_type, n_ff) > 0 && is_iq(gu_type) && is_iq(d_type) && n_embd % qg == 0 && n_ff % qd == 0 &&
            n_embd % 256 == 0 && (n_ff * n_embd) % 256 == 0;
 }
 
