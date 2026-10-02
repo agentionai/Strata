@@ -112,7 +112,22 @@ the local GPU and remote GPUs each rotate their own copy and the shared expert /
 | 1 map | this file | |
 | 2 loader + packing | done | Gyro-S and Gyro-M pack (`--compat-bf16`; 8 s each); 26/26 `tools/test_iq_pack.py` incl. 3 new Hadamard tests |
 | 3 CPU experts + rotation | done | `native_hadamard_test`: Strata's CPU path is bit-identical (rel. diff 0) to the fork's ggml graph (`ggml_mul(signs)`, `llama_mul_mat_hadamard`, `ggml_mul_mat`) on real Gyro-S (TQK6/TQK7) and Gyro-M (TQ2_T) experts, also through `ExpertPool::run_split_multi_native`; skipping the rotation is 1.2-1.5 off. Synthetic Q8_0: the folded expert reproduces the unrotated float expert to 1.2%. |
-| 4 GPU (CUDA/HIP) | see below | |
+| 4 GPU (CUDA/HIP) | code done, compile-checked; kernel parity see below | `Fmt<144..146>` (the fork's tq.cuh lane decode against q8_1), `dq_tq` in `dq_dispatch` (prompt FP16 path, embedding), `is_iq`/row bytes; `hadamard_rows` / `hadamard_rows_f16` (shared-memory FWHT, the CPU's butterfly order) at every insertion point of section 5; MMQ never takes a folded layer. Builds: CUDA 12.8 sm_120 (`local/cuda-build:12.8.1`), HIP gfx1151 (ROCm 7.2.1). |
+
+The engine still refuses an APR pack unless `STRATA_APR=1`: the GPU paths are checked kernel by kernel
+(`native_expert_parity --synthetic[-hadamard] tqk6/tqk7 tq2_t/tq2_t`, ctests when ggml is the fork), not end to end.
+
+Open items, in the order they block a first real run:
+1. An end-to-end GPU run (needs a free GPU): `strata` on a Gyro pack against llama.cpp (fork) on the same prompt -
+   first-token logits / top-k agreement, then a short greedy generation.
+2. Gyro-M's Q8_0 PLE table: `--ple-gguf <Gyro-S.gguf>` works around it; a Q8_0 reader in `ngram.cpp` removes it.
+3. Gyro-S's Q6_K `token_embd`: `--embd-gguf` from `embd_bf16_pack.py --gguf` works around it; `dq_q6_k` removes it.
+4. Speed: the trellis decode is the fork's straightforward lane decode (codebook in global memory, no decode-once
+   `Split<T>` for multi-token windows, no MMQ for prompts). Expected well below the IQ types per byte until a
+   `Split<144..146>` and an MMQ (or the fork's f62fdead0 tile loader) are added.
+5. setup.py / the installer know nothing about APR models (manual packing only, as for OrcaRouter).
+6. The expert profile (`data/expert-profile.bin`) is the original model's; Gyro's router is the original BF16 one,
+   so it should transfer, but it is not measured.
 
 ## 8. Running it
 
@@ -123,7 +138,29 @@ Build (CPU tests only, no GPU):
     build-cpu/native_hadamard_test                                   # synthetic, ~1 min (ggml's placeholder TQ encoder)
     build-cpu/native_hadamard_test --pack <pack> --gguf <Gyro.gguf> 0 0 47 511
 
-Pack:
+NVIDIA (CUDA 13 recommended for RTX 50; the agention fork's ggml for the CPU traits):
 
-    STRATA_GGUF_PY=<agention llama.cpp>/gguf-py python tools/iq_pack.py --gguf <Gyro-S.gguf> --out packs/gyro-s --compat-bf16
-    STRATA_GGUF_PY=... python tools/embd_bf16_pack.py --gguf <Gyro-S.gguf> --out packs/gyro-s/token-embd-bf16.gguf
+    cmake -S . -B build -DSTRATA_ENABLE_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=120 -DSTRATA_GGML_DIR=<agention llama.cpp>
+    cmake --build build -j
+    build/native_expert_parity --synthetic tqk6/tqk7 tq2_t/tq2_t
+    build/native_expert_parity --synthetic-hadamard tqk6/tqk7 tq2_t/tq2_t
+
+Pack (once per model):
+
+    export STRATA_GGUF_PY=<agention llama.cpp>/gguf-py
+    python tools/iq_pack.py --gguf Qwen3.8-Flash-Next-Gyro-S-TQ1_0.gguf --out packs/gyro-s --compat-bf16
+    python tools/embd_bf16_pack.py --gguf Qwen3.8-Flash-Next-Gyro-S-TQ1_0.gguf --out packs/gyro-s/token-embd-bf16.gguf
+    # MTP draft layer, as docs/ORCA.md: tools/mtp_fetch.py, mtp_pack.py, mtp_rt.py, data/draft_vocab.bin
+
+Engine (`strata-gyro-s.json` for `python -m serve.server --engine strata --config strata-gyro-s.json`):
+
+    STRATA_APR=1 build/strata --pack packs/gyro-s --native <Gyro-S.gguf> --embd-gguf packs/gyro-s/token-embd-bf16.gguf
+        --expert-profile data/expert-profile.bin --expert-cache auto --prefill 512 --spec 4 --spec-min-p 0.5
+        --mtp mtp/rt --max-context 32768 --kv int8
+
+- RTX 5090 (32 GB), fully resident: Gyro-S's experts are 24.0 GiB, so `--expert-cache auto` should hold all 24,576
+  of them beside the 1.4 GiB pack, the native projections and the KV cache at 32K; the PLE table stays on the SSD.
+- 8-16 GB card: the same command; `--expert-cache auto` keeps the hottest experts that fit and the CPU pool computes
+  the rest from RAM (needs RAM for all 24 GiB of experts + ~10 GB; with less, `--resident-budget-gib N` maps the
+  GGUF and keeps N GiB resident). `--max-context 8192` leaves more VRAM to experts on a 12 GB card.
+- Gyro-M: the same with `--ple-gguf <Gyro-S.gguf>` (its own PLE table is Q8_0) and without `--embd-gguf` (Q8_0).
