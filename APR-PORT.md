@@ -51,9 +51,9 @@ input x (2560 = 20 blocks) and the down input h (640 = 5 blocks), on every path.
 | `output.weight` Q6_K / Q8_0 | yes (`NativeHead`, any `native_mmvq` type) |
 | hc_*, `output_hc_*`, ple_key, ple_value (Q6_K, Q8_0, IQ4_NL) | converted to BF16 by `iq_pack.py --compat-bf16` (the engine reads them as BF16; max abs err 0.0144, recorded in conversions.json). Gyro-M's Q8_0 ple_key could stay native. |
 | router BF16, norms F32 | yes |
-| `token_embd` Q6_K (Gyro-S) | **no GPU dequantizer** (`embed_type_supported`: is_iq types + BF16). Workaround added: `tools/embd_bf16_pack.py --gguf <model> --out embd.gguf`, then `--embd-gguf embd.gguf` (1.27 GB BF16, max rel err 2^-8). A `dq_q6_k` in `dq_dispatch` would remove the step. |
+| `token_embd` Q6_K (Gyro-S) | yes since this branch: `dq_q6_k` (llama.cpp's dequantize_block_q6_K) in `dq_dispatch`, `embed_type_supported` / `iq_row_bytes` take type 14 (embedding only). 300 random rows of the published Gyro-S table bit-identical to ggml's to_float. |
 | PLE table IQ4_NL (Gyro-S) | yes (`PleTable`) |
-| PLE table Q8_0 (Gyro-M) | **no** (`PleTable`: IQ4_NL, Q5_0 or FP8). Use `--ple-gguf <Gyro-S.gguf>` (the PLE table is not Hadamard-folded; same tensor, IQ4_NL), or add a Q8_0 reader to `ngram.cpp`. |
+| PLE table Q8_0 (Gyro-M) | yes since this branch: `PleTable` decodes Q8_0 rows (170 B, `PLE_ROW_BYTES_MAX` raised), mapped and direct SSD I/O. 320 random rows of the published Gyro-M table bit-identical to ggml's to_float, both I/O modes. |
 | MTP draft layer | its own S2-form experts (`mtp.cpp:182`), not the model's: unaffected. |
 
 ## 4. Where a new expert type must be added
@@ -112,7 +112,7 @@ the local GPU and remote GPUs each rotate their own copy and the shared expert /
 | 1 map | this file | |
 | 2 loader + packing | done | Gyro-S and Gyro-M pack (`--compat-bf16`; 8 s each); 26/26 `tools/test_iq_pack.py` incl. 3 new Hadamard tests |
 | 3 CPU experts + rotation | done | `native_hadamard_test`: Strata's CPU path is bit-identical (rel. diff 0) to the fork's ggml graph (`ggml_mul(signs)`, `llama_mul_mat_hadamard`, `ggml_mul_mat`) on real Gyro-S (TQK6/TQK7) and Gyro-M (TQ2_T) experts, also through `ExpertPool::run_split_multi_native`; skipping the rotation is 1.2-1.5 off. Synthetic Q8_0: the folded expert reproduces the unrotated float expert to 1.2%. |
-| 4 GPU (CUDA/HIP) | code done, compile-checked; kernel parity see below | `Fmt<144..146>` (the fork's tq.cuh lane decode against q8_1), `dq_tq` in `dq_dispatch` (prompt FP16 path, embedding), `is_iq`/row bytes; `hadamard_rows` / `hadamard_rows_f16` (shared-memory FWHT, the CPU's butterfly order) at every insertion point of section 5; MMQ never takes a folded layer. Builds: CUDA 12.8 sm_120 (`local/cuda-build:12.8.1`), HIP gfx1151 (ROCm 7.2.1). |
+| 4 GPU (CUDA/HIP) | done; kernel parity on gfx1151 (`native_expert_parity --synthetic[-hadamard]`, `hip_prefill_mmq_parity`) | `Fmt<144..146>` (the fork's tq.cuh lane decode against q8_1), `dq_tq` in `dq_dispatch` (prompt FP16 path, embedding), `is_iq`/row bytes; `hadamard_rows` / `hadamard_rows_f16` (shared-memory FWHT, the CPU's butterfly order) at every insertion point of section 5; MMQ never takes a folded layer. Builds: CUDA 12.8 sm_120 (`local/cuda-build:12.8.1`), HIP gfx1151 (ROCm 7.2.1). |
 
 The engine still refuses an APR pack unless `STRATA_APR=1`: the GPU paths are checked kernel by kernel
 (`native_expert_parity --synthetic[-hadamard] tqk6/tqk7 tq2_t/tq2_t`, ctests when ggml is the fork), not end to end.
@@ -120,11 +120,12 @@ The engine still refuses an APR pack unless `STRATA_APR=1`: the GPU paths are ch
 Open items, in the order they block a first real run:
 1. An end-to-end GPU run (needs a free GPU): `strata` on a Gyro pack against llama.cpp (fork) on the same prompt -
    first-token logits / top-k agreement, then a short greedy generation.
-2. Gyro-M's Q8_0 PLE table: `--ple-gguf <Gyro-S.gguf>` works around it (same shape [160, 320001536], not rotated),
-   or a Strata-ready file built with `tools/gguf_replace_tensor.py --replace per_layer_token_embd.weight=<Gyro-S>`.
-3. Gyro-S's Q6_K `token_embd`: done as a Strata-ready file, `Qwen3.8-Flash-Next-Gyro-S-strata.gguf` (token_embd
-   BF16 via `embd_bf16_pack.py --gguf` + `gguf_replace_tensor.py`; `gguf-pack diff --data`: 1223 tensors and all 76
-   metadata keys identical). Pack it with iq_pack.py itself: the pack records GGUF offsets.
+2. The published files run unchanged (no `--embd-gguf` / `--ple-gguf`): Gyro-S's Q6_K token_embd and Gyro-M's Q8_0
+   PLE table have readers. `native_expert_parity --load-check <pack> <gguf>` runs the engine's start-up checks
+   without a GPU load; both packs of the published files pass (all 302 / 303 GGUF-served tensors have a kernel,
+   `check_experts_gguf` ok, PLE table opens with direct I/O). No CPU-only smoke: Strata has no CPU-only engine.
+3. Optional, no longer needed: `tools/gguf_replace_tensor.py` (swap a tensor of another type into a GGUF, everything
+   else byte-identical) and `embd_bf16_pack.py --gguf` (a BF16 embedding, e.g. for an exact-BF16 experiment).
 4. Speed: decode-once (`Split<144..146>`) for verify windows and MMQ for prompts (the fork's f62fdead0 instances,
    built when `STRATA_GGML_DIR` is the fork; HIP needs `-DSTRATA_PREFILL_MMQ=ON`) are in, with the rotation on both
    prompt paths. Not measured for speed yet.
@@ -152,12 +153,13 @@ Pack (once per model):
 
     export STRATA_GGUF_PY=<agention llama.cpp>/gguf-py
     python tools/iq_pack.py --gguf Qwen3.8-Flash-Next-Gyro-S-TQ1_0.gguf --out packs/gyro-s --compat-bf16
-    python tools/embd_bf16_pack.py --gguf Qwen3.8-Flash-Next-Gyro-S-TQ1_0.gguf --out packs/gyro-s/token-embd-bf16.gguf
+    python tools/iq_pack.py --gguf Qwen3.8-Flash-Next-Gyro-M-TQ2_0.gguf --out packs/gyro-m --compat-bf16
+    build/native_expert_parity --load-check packs/gyro-s Qwen3.8-Flash-Next-Gyro-S-TQ1_0.gguf   # start-up checks
     # MTP draft layer, as docs/ORCA.md: tools/mtp_fetch.py, mtp_pack.py, mtp_rt.py, data/draft_vocab.bin
 
 Engine (`strata-gyro-s.json` for `python -m serve.server --engine strata --config strata-gyro-s.json`):
 
-    STRATA_APR=1 build/strata --pack packs/gyro-s --native <Gyro-S.gguf> --embd-gguf packs/gyro-s/token-embd-bf16.gguf
+    STRATA_APR=1 build/strata --pack packs/gyro-s --native Qwen3.8-Flash-Next-Gyro-S-TQ1_0.gguf
         --expert-profile data/expert-profile.bin --expert-cache auto --prefill 512 --spec 4 --spec-min-p 0.5
         --mtp mtp/rt --max-context 32768 --kv int8
 
@@ -166,4 +168,5 @@ Engine (`strata-gyro-s.json` for `python -m serve.server --engine strata --confi
 - 8-16 GB card: the same command; `--expert-cache auto` keeps the hottest experts that fit and the CPU pool computes
   the rest from RAM (needs RAM for all 24 GiB of experts + ~10 GB; with less, `--resident-budget-gib N` maps the
   GGUF and keeps N GiB resident). `--max-context 8192` leaves more VRAM to experts on a 12 GB card.
-- Gyro-M: the same with `--ple-gguf <Gyro-S.gguf>` (its own PLE table is Q8_0) and without `--embd-gguf` (Q8_0).
+- Gyro-M: the same with `--pack packs/gyro-m --native Qwen3.8-Flash-Next-Gyro-M-TQ2_0.gguf`; its experts are
+  29.9 GiB, so a 5090 holds most but not all of them (the CPU pool computes the rest).

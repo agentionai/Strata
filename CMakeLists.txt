@@ -961,7 +961,8 @@ if(STRATA_NATIVE_EXPERTS)
   if(STRATA_ENABLE_CUDA OR STRATA_ENABLE_HIP)
     add_executable(native_expert_parity src/kernels/native_expert_parity.cpp)
     target_include_directories(native_expert_parity PRIVATE ${_strata_gpu_include_directories})
-    target_link_libraries(native_expert_parity PRIVATE strata_kernels strata_kernels_cpu strata_artifact ${_strata_gpu_runtime_target})
+    # strata_engine: the --load-check mode runs the engine's start-up checks (NativeDense, check_experts_gguf)
+    target_link_libraries(native_expert_parity PRIVATE strata_engine strata_kernels strata_kernels_cpu strata_artifact ${_strata_gpu_runtime_target})
     if(STRATA_BUILD_TESTS AND STRATA_ENABLE_CUDA)
       # Unsloth UD-Q4_K_XL's three expert pairs (and Q8_0 alone, its embedding) on synthetic ggml-quantized weights
       # at 2560/640: GPU and CPU experts against the float reference, GPU dequantizers against to_float
