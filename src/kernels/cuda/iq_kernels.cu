@@ -2041,9 +2041,7 @@ __device__ __forceinline__ void dq_dispatch(int ty, const void* vx, int64_t ibs,
         case 42: dq_q2_0(vx, ibs, y, tid); break;
         case 12: dq_q4_k(vx, ibs, y, tid); break;
         case 13: dq_q5_k(vx, ibs, y, tid); break;
-#ifdef STRATA_Q6K_EXPERTS
-        case 14: dq_q6_k(vx, ibs, y, tid); break;
-#endif
+        case 14: dq_q6_k(vx, ibs, y, tid); break;   // the Q6K_EXPERTS kernels, and the token embedding (Gyro-S)
         case 7: dq_q5_1(vx, ibs, y, tid); break;
         case 6: dq_q5_0(vx, ibs, y, tid); break;
         case 2: dq_q4_0(vx, ibs, y, tid); break;
@@ -2858,7 +2856,8 @@ void iq_set_old_kernels(bool old) { g_old_kernels = old; }
 bool iq_old_kernels() { return g_old_kernels; }
 
 bool iq_supported(int t) noexcept { return is_iq(t); }
-bool embed_type_supported(int t) noexcept { return is_iq(t) || t == 30; }
+// BF16 and Q6_K: embedding only (dq_dispatch has them; no expert or prompt-path kernels take them)
+bool embed_type_supported(int t) noexcept { return is_iq(t) || t == 30 || t == 14; }
 
 size_t iq_row_bytes(int t, int64_t n) noexcept {
     switch (t) {
