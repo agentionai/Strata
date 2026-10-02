@@ -30,6 +30,7 @@
 #include "strata/kernels/cpu/expert.hpp"
 #include "strata/kernels/cpu/pool.hpp"
 #include "strata/kernels/cpu/expert_layout.hpp"
+#include "strata/kernels/cpu/hadamard.hpp"
 #include "strata/kernels/ngram.hpp"
 #include "strata/kernels/iq_kernels.hpp"
 #include "strata/kernels/s2_expert_grouped.hpp"
@@ -1694,6 +1695,14 @@ int main(int argc, char** argv) {
                              f.gu_type, f.d_type);
                 return 1;
             }
+        }
+        // APR (prism.hadamard) packs: the CPU pool rotates the expert activations (native_quant_act / _h), the GPU
+        // expert kernels, the remote GPUs and the prompt path do not yet (APR-PORT.md, stage 4).  Refused here
+        // rather than run with unrotated activations, which would produce plausible-looking garbage.
+        if (strata::kernels::cpu::hadamard_spec().any()) {
+            std::fprintf(stderr, "strata generate: this pack's experts are Hadamard-folded (hadamard.txt, an APR "
+                                 "model); the GPU expert paths cannot apply the activation rotation yet\n");
+            return 1;
         }
     }
     const bool native_pack = strata::kernels::cpu::expert_layout().native;

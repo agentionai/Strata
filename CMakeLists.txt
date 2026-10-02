@@ -776,7 +776,7 @@ if(STRATA_BUILD_TESTS OR STRATA_BUILD_CONVERSATION_TESTS)
 endif()
 
 add_library(strata_kernels_cpu STATIC src/kernels/cpu/expert.cpp src/kernels/cpu/pool.cpp
-            src/kernels/cpu/expert_layout.cpp src/kernels/cpu/q2_avx2.cpp)
+            src/kernels/cpu/expert_layout.cpp src/kernels/cpu/q2_avx2.cpp src/kernels/cpu/hadamard.cpp)
 target_include_directories(strata_kernels_cpu PUBLIC include)
 # Plan v0.3 P6: only the kernel files get the AVX-512 / AVX2 flags; the pool and the probe run on any x86-64,
 # and the engine picks the kernels at run time (cpu_avx512_ok).
@@ -996,6 +996,15 @@ if(STRATA_BUILD_TESTS)
   add_executable(expert_multi_test src/kernels/cpu/expert_multi_test.cpp)
   target_link_libraries(expert_multi_test PRIVATE strata_kernels_cpu)
   add_test(NAME expert_multi_test COMMAND expert_multi_test)
+
+  if(STRATA_NATIVE_EXPERTS)
+    # APR port: a Hadamard-folded trellis expert (TQ2_T / TQK6 / TQK7) on the CPU path vs llama.cpp's graph for the
+    # same weights (synthetic; needs STRATA_GGML_DIR = a ggml with the trellis types, else it reports and fails)
+    add_executable(native_hadamard_test src/kernels/cpu/native_hadamard_test.cpp)
+    target_link_libraries(native_hadamard_test PRIVATE strata_kernels_cpu strata_artifact)
+    add_test(NAME native_hadamard_test COMMAND native_hadamard_test)
+    set_tests_properties(native_hadamard_test PROPERTIES TIMEOUT 300)
+  endif()
 
   add_executable(expert_parity src/kernels/cpu/expert_parity.cpp)
   target_link_libraries(expert_parity PRIVATE strata_kernels_cpu)

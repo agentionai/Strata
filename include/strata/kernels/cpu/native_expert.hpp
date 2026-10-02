@@ -27,6 +27,12 @@ struct NativeFmt {
     size_t up_off = 0, down_off = 0;    ///< inside the blob
     size_t bytes = 0;                   ///< the whole blob
     size_t act_bytes = 0, h_bytes = 0;  ///< quantized activation sizes (n_embd of gu_act, n_ff of d_act)
+    /// prism.hadamard (hadamard.hpp): the experts of this layer are stored in a rotated basis, and
+    /// native_quant_act / native_quant_h apply y = H_block (signs * x) before quantizing.  had_block 0 = none.
+    int had_block = 0;
+    bool had_gu = false, had_d = false;
+    const float* gu_signs = nullptr;    ///< n_embd signs for x (nullptr: identity)
+    const float* d_signs = nullptr;     ///< n_ff signs for h (nullptr: identity)
 };
 
 /// Whether this build has the ggml-cpu path.
@@ -34,9 +40,9 @@ bool native_experts_available() noexcept;
 /// Fills `f` for a layer; false (with a reason) when ggml-cpu has no dot product for a type.
 bool native_fmt(int gu_type, int d_type, int64_t n_embd, int64_t n_ff, NativeFmt& f, std::string& err);
 
-/// x (n_embd floats) -> the gate/up activation (act_bytes).
+/// x (n_embd floats) -> the gate/up activation (act_bytes), rotated first when the layer is Hadamard-folded.
 void native_quant_act(const NativeFmt& f, const float* x, void* dst);
-/// h (n_ff floats) -> the down activation (h_bytes).
+/// h (n_ff floats) -> the down activation (h_bytes), rotated first when the layer is Hadamard-folded.
 void native_quant_h(const NativeFmt& f, const float* h, void* dst);
 
 /// ff[t][r] = silu(gate_r . a[t]) * (up_r . a[t]) for rows r in [r0, r1), `nt` tokens.
