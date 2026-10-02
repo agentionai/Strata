@@ -120,11 +120,14 @@ The engine still refuses an APR pack unless `STRATA_APR=1`: the GPU paths are ch
 Open items, in the order they block a first real run:
 1. An end-to-end GPU run (needs a free GPU): `strata` on a Gyro pack against llama.cpp (fork) on the same prompt -
    first-token logits / top-k agreement, then a short greedy generation.
-2. Gyro-M's Q8_0 PLE table: `--ple-gguf <Gyro-S.gguf>` works around it; a Q8_0 reader in `ngram.cpp` removes it.
-3. Gyro-S's Q6_K `token_embd`: `--embd-gguf` from `embd_bf16_pack.py --gguf` works around it; `dq_q6_k` removes it.
-4. Speed: the trellis decode is the fork's straightforward lane decode (codebook in global memory, no decode-once
-   `Split<T>` for multi-token windows, no MMQ for prompts). Expected well below the IQ types per byte until a
-   `Split<144..146>` and an MMQ (or the fork's f62fdead0 tile loader) are added.
+2. Gyro-M's Q8_0 PLE table: `--ple-gguf <Gyro-S.gguf>` works around it (same shape [160, 320001536], not rotated),
+   or a Strata-ready file built with `tools/gguf_replace_tensor.py --replace per_layer_token_embd.weight=<Gyro-S>`.
+3. Gyro-S's Q6_K `token_embd`: done as a Strata-ready file, `Qwen3.8-Flash-Next-Gyro-S-strata.gguf` (token_embd
+   BF16 via `embd_bf16_pack.py --gguf` + `gguf_replace_tensor.py`; `gguf-pack diff --data`: 1223 tensors and all 76
+   metadata keys identical). Pack it with iq_pack.py itself: the pack records GGUF offsets.
+4. Speed: decode-once (`Split<144..146>`) for verify windows and MMQ for prompts (the fork's f62fdead0 instances,
+   built when `STRATA_GGML_DIR` is the fork; HIP needs `-DSTRATA_PREFILL_MMQ=ON`) are in, with the rotation on both
+   prompt paths. Not measured for speed yet.
 5. setup.py / the installer know nothing about APR models (manual packing only, as for OrcaRouter).
 6. The expert profile (`data/expert-profile.bin`) is the original model's; Gyro's router is the original BF16 one,
    so it should transfer, but it is not measured.
