@@ -480,6 +480,13 @@ bool Verifier::init(const WeightTable& wt, const ModelGeometry& g, SessionState&
         sink_.ctx = this;
     }
 
+    // APR: the rotated copy of the expert input (nat_xr_, T x N floats) only where a layer's gate/up is
+    // Hadamard-folded; its one reader is that layer's f.had_gu branch in the expert-input step below
+    bool had_gu_any = false;
+    {
+        const auto& lay = strata::kernels::cpu::expert_layout();
+        for (size_t l = 0; lay.native && l < lay.fmt.size(); ++l) had_gu_any = had_gu_any || lay.fmt[l].had_gu;
+    }
     // ---- the device arena: the same sequence counted, then carved
     auto carve = [&](Bump& b) {
         tok_ = b.take<int32_t>(T); step_ = b.take<int32_t>(T * strata::kernels::kStepCount);
@@ -508,7 +515,7 @@ bool Verifier::init(const WeightTable& wt, const ModelGeometry& g, SessionState&
         staging_ = b.take<uint8_t>((uint64_t) kStagingBlobs * strata::kernels::cpu::expert_layout().max_blob);
         hit_xq_ = b.take<uint8_t>(T * (N / 32) * 34); hit_xs_ = b.take<float>(T * (N / 32));
         nat_xq_ = b.take<uint8_t>(T * (N / 32) * 36);
-        nat_xr_ = b.take<float>(T * N);
+        nat_xr_ = had_gu_any ? b.take<float>(T * N) : nullptr;
         hit_scratch_ = b.take<uint8_t>(std::max<uint64_t>(
             strata::kernels::moe_hit_grouped_scratch_bytes((int64_t) (T * K), g.n_embd, g.n_ff),
             strata::kernels::native_expert_scratch_bytes((int64_t) (T * K), g.n_ff)));
@@ -1360,7 +1367,7 @@ bool Verifier::record_window(int T, cudaStream_t cs, std::string& err) {
             // STRATA_QFUSE / STRATA_VERIFY_QDEDUP may already have written is of the unrotated input, so a folded layer
             // always rewrites it from the rotated rows (same stream, after the shared expert has read it).
             const auto& f = strata::kernels::cpu::expert_layout().fmt[(size_t) l];
-            if (f.had_gu) {
+            if (f.had_gu) {   // nat_xr_ exists: init carved it because this layer is folded (had_gu_any)
                 hadamard_rows(xm, nat_xr_ + (size_t) tb * N, n, N, f.had_block, had_sx_, cs);
                 quantize_q8_1_rows(nat_xr_ + (size_t) tb * N, n, N, nat_xq_ + (size_t) tb * (N / 32) * 36, cs);
             } else if (!qdedup && !q8_ffn) {
