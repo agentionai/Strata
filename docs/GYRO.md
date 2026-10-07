@@ -19,7 +19,13 @@ Qwen3.8-Flash-Next models. It is not the GGUF draft file from the Gyro repositor
 
 ## Quick setup
 
-From a Strata checkout:
+Gyro support lives on the `rc2` branch of the agentionai Strata fork: Strata v0.1.40.3 plus the trellis types
+(TQ2_T / TQK6 / TQK7), the Hadamard rotation and the CPU trellis kernels.
+
+```sh
+git clone -b rc2 https://github.com/agentionai/Strata
+cd Strata
+```
 
 `tools/gyro_setup.sh` does every step below on Linux:
 
@@ -34,7 +40,7 @@ It prints the command that starts the server. The steps, by hand:
 
 ## 1. Build
 
-Strata's GGML dependency must be the agentionai llama.cpp fork, which has the trellis types:
+From the `rc2` checkout above. Strata's GGML dependency must be the agentionai llama.cpp fork, which has the trellis types:
 
 ```sh
 git clone --depth 1 https://github.com/agentionai/llama.cpp ../agention-llama.cpp
