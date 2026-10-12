@@ -27,6 +27,7 @@
 #include "strata/prefill/moe_fused.hpp"
 #include "strata/prefill/moe_fused_iq.hpp"
 #include "strata/prefill/moe_mmq.hpp"
+#include "strata/prefill/gather_schedule.hpp"
 #include "strata/core/peer_experts.hpp"
 #include "strata/prefill/kernels.hpp"
 
@@ -1609,6 +1610,11 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
         }
     } help_scope{m, helped};
     PfTimer pt;
+    // Diagnostic receipts only: "dequant" also covers native packing/gather on MMQ.
+    // Count actual dispatch/launches without adding GPU events or changing that timeline.
+    int64_t pf_mmq_layers = 0, pf_fp16_layers = 0, pf_fused_layers = 0;
+    int64_t pf_group_gathers = 0, pf_single_gathers = 0, pf_dequant_experts = 0, pf_routed_group_layers = 0;
+    uint64_t pf_gather_bytes = 0;
     PeTimer pe;
     if (m.pp) pe.dev = m.pp->dev; else pe.on = false;
     const cudaStream_t cs = (cudaStream_t) m.cs;
@@ -2307,6 +2313,11 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
                     const bool fused_nat = use_mmq && stream_all && no_peer && lay.native && !had_gu && !had_d &&
                                            fused::native_supported(mmq_gt, mmq_dt);
                     const bool fused_l = (use_mmq && stream_all && no_peer && !lay.native && fused::enabled()) || fused_nat;
+                    if (pt.on) {
+                        if (fused_l) ++pf_fused_layers;
+                        else if (use_mmq) ++pf_mmq_layers;
+                        else ++pf_fp16_layers;
+                    }
                     size_t n_order = 0;                   // the routed experts (the debug report; unknown when fused)
                     bool peer_now = false;                // multi-GPU: the peer computed rows of this layer (MMQ path only)
                     if (fused_l) {
@@ -2751,8 +2762,21 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
                             const char* v = std::getenv("STRATA_PREFILL_GROUP_GATHER");
                             return v == nullptr || std::atoi(v) != 0;
                         }();
-                        const bool group_gather = group_env && stream_all && use_mmq && lay.native &&
+                        // Opt-in HIP experiment: routed-only staging can batch resident and streamed experts.
+                        // Before reusing a retained staging slot, flush the partial gather and queue its release;
+                        // the copy stream then waits for that new reader event, not an earlier generation's.
+                        static const bool routed_group_env = [] {
+#if defined(STRATA_USE_HIP)
+                            const char* v = std::getenv("STRATA_PREFILL_ROUTED_GATHER");
+                            return v != nullptr && std::atoi(v) == 1;
+#else
+                            return false;
+#endif
+                        }();
+                        const bool routed_group = routed_group_env && !stream_all && no_peer;
+                        const bool group_gather = group_env && (stream_all || routed_group) && use_mmq && lay.native &&
                                                   MMQ_GROUP <= mmq::kGatherGroupMax;
+                        if (pt.on && group_gather && routed_group) ++pf_routed_group_layers;
                         mmq::GatherGroup gg;
                         int gg_slots[MMQ_GROUP];
                         int gg_nslots = 0;   // ring slots gathered by the next flush
@@ -2764,8 +2788,14 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
                                 cudaStreamWaitEvent(m.cs, m.copied[gg_slots[gg_nslots - 1]], 0);
                                 pt.mark(kPfDequant, cs);
                             }
-                            if (!mmq::gather_native_group(gg, f.up_off, mmq_gub / 2, f.down_off, mmq_db, m.grp_gu, mmq_gub,
-                                                          m.grp_d, mmq_db, m.cs)) {
+                            const bool grouped = mmq::gather_native_group(gg, f.up_off, mmq_gub / 2, f.down_off, mmq_db,
+                                                                         m.grp_gu, mmq_gub, m.grp_d, mmq_db, m.cs);
+                            if (pt.on) {
+                                pf_gather_bytes += (uint64_t) (gg.n - gg.first) * (mmq_gub + mmq_db);
+                                if (grouped) ++pf_group_gathers;
+                                else pf_single_gathers += gg.n - gg.first;
+                            }
+                            if (!grouped) {
                                 for (int i = gg.first; i < gg.n; ++i) {   // not 16-byte aligned: one at a time
                                     const uint8_t* b = gg.blob[i];
                                     mmq::gather_native(b, b + f.up_off, mmq_gub / 2, b + f.down_off, mmq_db,
@@ -2797,6 +2827,7 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
                                     gg = mmq::GatherGroup{};
                                 } else if (lay.native) {
                                     const auto& f = lay.fmt[(size_t) l];
+                                    if (pt.on) { ++pf_single_gathers; pf_gather_bytes += mmq_gub + mmq_db; }
                                     mmq::gather_native(blob_dev, blob_dev + f.up_off, mmq_gub / 2, blob_dev + f.down_off,
                                                        mmq_db, m.grp_gu + q * mmq_gub, m.grp_d + q * mmq_db, m.cs);
                                 } else {
@@ -2833,6 +2864,7 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
                                 return true;
                             }
                             const int q = (int) (j % DQ);
+                            if (pt.on) ++pf_dequant_experts;
                             if (lay.native) {
                                 // plan v0.3 P6: a native pack's layer, dequantized by llama.cpp's own formulas
                                 const auto& f = lay.fmt[(size_t) l];
@@ -2857,6 +2889,12 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
                             const size_t lookahead = STAGE - 1;
                             for (size_t j = 0; j < order.size(); ++j) {
                                 while (staged < order.size() && staged <= j + lookahead) {
+                                    if (group_gather) {
+                                        const int32_t e_next = order[staged];
+                                        const bool resident_next = m.host_res && m.cache &&
+                                            m.host_res[(size_t) l * m.g->n_expert + e_next] >= 0;
+                                        if (gather_before_reuse(gg_slots, gg_nslots, stage_next, resident_next)) flush();
+                                    }
                                     if (!stage_one(staged)) return false;
                                     ++staged;
                                 }
@@ -2865,8 +2903,10 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
                                     ++stats_.experts_resident;
                                     if (!compute(j, m.cache->device_slot(m.host_res[(size_t) l * m.g->n_expert + e]), -1)) return false;
                                 } else {
-                                    pt.mark(kPfWaitCopy, cs);
-                                    cudaStreamWaitEvent(m.cs, m.copied[stage_of[j]], 0);
+                                    if (!group_gather) {
+                                        pt.mark(kPfWaitCopy, cs);
+                                        cudaStreamWaitEvent(m.cs, m.copied[stage_of[j]], 0);
+                                    }
                                     if (!compute(j, m.stage_dev[stage_of[j]], stage_of[j])) return false;
                                 }
                             }
@@ -3070,6 +3110,12 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
         std::fprintf(stderr, "strata prefill timing: host: chunk setup (PLE rows, the expert stream plan) %.0f ms, "
                              "waiting for each chunk %.0f ms, after each chunk (the draft layer, progress) %.0f ms, "
                              "PLE %.0f ms\n", host_setup_ms, host_sync_ms, host_chunk_ms, stats_.ms_ple);
+        std::fprintf(stderr, "strata prefill dispatch: mmq layers %lld, fp16 layers %lld, fused layers %lld, "
+                             "group gathers %lld, single gathers %lld, dequant experts %lld, gather bytes %llu, "
+                             "routed grouped layers %lld\n",
+                     (long long) pf_mmq_layers, (long long) pf_fp16_layers, (long long) pf_fused_layers,
+                     (long long) pf_group_gathers, (long long) pf_single_gathers, (long long) pf_dequant_experts,
+                     (unsigned long long) pf_gather_bytes, (long long) pf_routed_group_layers);
         if (pe.on) {
             int pd = 0; cudaGetDevice(&pd); cudaSetDevice(pe.dev); cudaStreamSynchronize(m.pp->s); pe.fold(); cudaSetDevice(pd);
             std::string pl;

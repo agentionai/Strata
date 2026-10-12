@@ -1,5 +1,12 @@
 # Gyro (agentionai rotor quants) on Strata
 
+R9700 follow-up: [RDNA4 profiling results and roadmap](GYRO_RDNA4_ROADMAP.md)
+records a same-binary attention-switch A/B on Gyro-S, its limits, and the next
+expert-preparation investigations. It does not change setup defaults.
+
+The [routed-gather follow-up](GYRO_ROUTED_GATHER.md) adds an opt-in HIP scheduling
+change with byte/lifetime tests and a separate fresh-build OFF/ON comparison.
+
 Validated on Linux with an RTX 5090 (32 GB, CUDA 13.0, sm_120; 2026-10-02 and 2026-10-03), an RTX 3090 (24 GB,
 sm_86; 2026-10-03) and two RTX 4090s (24 GB each, sm_89; 2026-10-04, single and dual GPU). A short end-to-end run on AMD (Strix Halo, gfx1151, ROCm) passed on 2026-10-03.
 

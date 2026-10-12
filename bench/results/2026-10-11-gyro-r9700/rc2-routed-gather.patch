@@ -1,0 +1,265 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 30a362c..85baf47 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1393,6 +1393,14 @@ if(STRATA_NATIVE_EXPERTS)
+     add_test(NAME hip_prefill_mmq_parity COMMAND hip_prefill_mmq_parity)
+     set_tests_properties(hip_prefill_mmq_parity PROPERTIES TIMEOUT 120)
+     list(APPEND _strata_hip_tests hip_prefill_mmq_parity)
++    add_executable(hip_prefill_gather_parity tests/hip/prefill_gather_parity.cpp)
++    target_link_libraries(hip_prefill_gather_parity PRIVATE strata_prefill)
++    add_test(NAME hip_prefill_gather_parity COMMAND hip_prefill_gather_parity)
++    set_tests_properties(hip_prefill_gather_parity PROPERTIES TIMEOUT 60)
++    list(APPEND _strata_hip_tests hip_prefill_gather_parity)
++    add_executable(prefill_gather_schedule tests/hip/prefill_gather_schedule.cpp)
++    target_include_directories(prefill_gather_schedule PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
++    add_test(NAME prefill_gather_schedule COMMAND prefill_gather_schedule)
+   endif()
+   if(STRATA_ENABLE_HIP)
+     # Optional real-model diagnostic: pass the GGUF shard containing the native PLE key.
+diff --git a/include/strata/prefill/gather_schedule.hpp b/include/strata/prefill/gather_schedule.hpp
+new file mode 100644
+index 0000000..1a1b571
+--- /dev/null
++++ b/include/strata/prefill/gather_schedule.hpp
+@@ -0,0 +1,12 @@
++#pragma once
++
++namespace strata::prefill {
++// Before a routed-only copy overwrites `next_slot`, every pending gather reader
++// of that slot must be queued and its release event recorded. Resident experts
++// do not use or advance the staging ring. `n` entries are live in `slots`.
++inline bool gather_before_reuse(const int* slots, int n, int next_slot, bool resident) {
++    if (resident) return false;
++    for (int i = 0; i < n; ++i) if (slots[i] == next_slot) return true;
++    return false;
++}
++} // namespace strata::prefill
+diff --git a/src/prefill/prefill.cpp b/src/prefill/prefill.cpp
+index 69aa0fe..1369b10 100644
+--- a/src/prefill/prefill.cpp
++++ b/src/prefill/prefill.cpp
+@@ -32,6 +32,7 @@
+ #include "strata/prefill/moe_fused.hpp"
+ #include "strata/prefill/moe_fused_iq.hpp"
+ #include "strata/prefill/moe_mmq.hpp"
++#include "strata/prefill/gather_schedule.hpp"
+ #include "strata/core/peer_experts.hpp"
+ #include "strata/prefill/kernels.hpp"
+ 
+@@ -3266,7 +3267,17 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
+                             const char* v = std::getenv("STRATA_PREFILL_GROUP_GATHER");
+                             return v == nullptr || std::atoi(v) != 0;
+                         }();
+-                        const bool group_gather = group_env && stream_all && use_mmq && lay.native &&
++                        // Explicit HIP opt-in, preserving the streamed path and single-device scope.
++                        static const bool routed_group_env = [] {
++#if defined(STRATA_USE_HIP)
++                            const char* v = std::getenv("STRATA_PREFILL_ROUTED_GATHER");
++                            return v != nullptr && std::atoi(v) == 1;
++#else
++                            return false;
++#endif
++                        }();
++                        const bool routed_group = routed_group_env && !stream_all && no_peer;
++                        const bool group_gather = group_env && (stream_all || routed_group) && use_mmq && lay.native &&
+                                                   MMQ_GROUP <= mmq::kGatherGroupMax;
+                         mmq::GatherGroup gg;
+                         int gg_slots[MMQ_GROUP];
+@@ -3384,6 +3395,12 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
+                                 // Resident experts occupy no staging slot. Keep STAGE actual transfers ahead,
+                                 // rather than STAGE positions in the mixed resident/streamed order.
+                                 while (staged < order.size() && (stream_ahead ? pending < STAGE : staged <= j + lookahead)) {
++                                    if (group_gather) {
++                                        const int32_t e_next = order[staged];
++                                        const bool resident_next = m.host_res && m.cache &&
++                                            m.host_res[(size_t) l * m.g->n_expert + e_next] >= 0;
++                                        if (gather_before_reuse(gg_slots, gg_nslots, stage_next, resident_next)) flush();
++                                    }
+                                     if (!stage_one(staged)) return false;
+                                     if (stage_of[staged] >= 0) ++pending;
+                                     ++staged;
+@@ -3393,10 +3410,12 @@ bool Prefill::run_impl(const int64_t* tokens, int64_t n, int64_t pos0, std::stri
+                                     ++stats_.experts_resident;
+                                     if (!compute(j, m.cache->device_slot(m.host_res[(size_t) l * m.g->n_expert + e]), -1)) return false;
+                                 } else {
+-                                    pt.mark(kPfWaitCopy, cs);
+-                                    cudaStreamWaitEvent(m.cs, m.copied[stage_of[j]], 0);
++                                    if (!group_gather) {
++                                        pt.mark(kPfWaitCopy, cs);
++                                        cudaStreamWaitEvent(m.cs, m.copied[stage_of[j]], 0);
++                                    }
+                                     if (!compute(j, m.stage_dev[stage_of[j]], stage_of[j])) return false;
+-                                    --pending;   // compute recorded the slot's release event before any reuse
++                                    --pending;   // grouped readers release in flush(), before the next slot reuse
+                                 }
+                             }
+                         } else {
+diff --git a/tests/hip/prefill_gather_parity.cpp b/tests/hip/prefill_gather_parity.cpp
+new file mode 100644
+index 0000000..44ef0c4
+--- /dev/null
++++ b/tests/hip/prefill_gather_parity.cpp
+@@ -0,0 +1,86 @@
++// Byte-exact native gather screens, including Gyro's gate/up/down byte sizes.
++// No quantization/dequantization is performed; padding and untouched slots must stay intact.
++#include "strata/prefill/moe_mmq.hpp"
++#include <hip/hip_runtime.h>
++
++#include <algorithm>
++#include <cstdint>
++#include <cstdio>
++#include <stdexcept>
++#include <vector>
++
++namespace mmq = strata::prefill::mmq;
++namespace {
++void check(hipError_t error) {
++    if (error != hipSuccess) throw std::runtime_error(hipGetErrorString(error));
++}
++struct Buffer {
++    uint8_t* ptr = nullptr;
++    explicit Buffer(size_t bytes) { check(hipMalloc(&ptr, bytes)); }
++    ~Buffer() { if (ptr) (void) hipFree(ptr); }
++    Buffer(const Buffer&) = delete;
++    Buffer& operator=(const Buffer&) = delete;
++};
++
++void run(int first, int n, bool padded) {
++    constexpr size_t half = 640 * (2560 / 128) * 26; // TQK6, gate and up
++    constexpr size_t down = 2560 * (640 / 128) * 30; // TQK7
++    const size_t up_off = half + (padded ? 32 : 0);
++    const size_t down_off = up_off + half + (padded ? 64 : 0);
++    const size_t blob_stride = down_off + down + 32;
++    const size_t gu_stride = 2 * half + (padded ? 16 : 0);
++    const size_t d_stride = down + (padded ? 32 : 0);
++    constexpr int slots = mmq::kGatherGroupMax;
++    std::vector<uint8_t> input(slots * blob_stride);
++    for (size_t i = 0; i < input.size(); ++i) input[i] = (uint8_t) ((i * 17 + i / 13) % 251);
++    Buffer src(input.size()), gu(slots * gu_stride + 64), dn(slots * d_stride + 64);
++    check(hipMemcpy(src.ptr, input.data(), input.size(), hipMemcpyHostToDevice));
++    check(hipMemset(gu.ptr, 0xa5, slots * gu_stride + 64));
++    check(hipMemset(dn.ptr, 0xa5, slots * d_stride + 64));
++    mmq::GatherGroup group;
++    group.first = first; group.n = n;
++    for (int q = 0; q < slots; ++q) group.blob[q] = src.ptr + q * blob_stride;
++    if (!mmq::gather_native_group(group, up_off, half, down_off, down,
++                                 gu.ptr, gu_stride, dn.ptr, d_stride, nullptr))
++        throw std::runtime_error("aligned gather declined");
++    std::vector<uint8_t> expected_gu(slots * gu_stride + 64, 0xa5), expected_dn(slots * d_stride + 64, 0xa5);
++    for (int q = first; q < n; ++q) {
++        const auto start = input.begin() + q * blob_stride;
++        std::copy_n(start, half, expected_gu.begin() + q * gu_stride);
++        std::copy_n(start + up_off, half, expected_gu.begin() + q * gu_stride + half);
++        std::copy_n(start + down_off, down, expected_dn.begin() + q * d_stride);
++    }
++    std::vector<uint8_t> actual_gu(expected_gu.size()), actual_dn(expected_dn.size());
++    check(hipMemcpy(actual_gu.data(), gu.ptr, actual_gu.size(), hipMemcpyDeviceToHost));
++    check(hipMemcpy(actual_dn.data(), dn.ptr, actual_dn.size(), hipMemcpyDeviceToHost));
++    if (actual_gu != expected_gu || actual_dn != expected_dn)
++        throw std::runtime_error("byte mismatch or padding write");
++    // A declined unaligned request must enqueue nothing and leave every byte unchanged.
++    group.blob[first] += 1;
++    if (mmq::gather_native_group(group, up_off, half, down_off, down,
++                                gu.ptr, gu_stride, dn.ptr, d_stride, nullptr))
++        throw std::runtime_error("unaligned gather accepted");
++    check(hipMemcpy(actual_gu.data(), gu.ptr, actual_gu.size(), hipMemcpyDeviceToHost));
++    check(hipMemcpy(actual_dn.data(), dn.ptr, actual_dn.size(), hipMemcpyDeviceToHost));
++    if (actual_gu != expected_gu || actual_dn != expected_dn)
++        throw std::runtime_error("declined gather changed bytes");
++    group.n = slots + 1;
++    if (mmq::gather_native_group(group, up_off, half, down_off, down,
++                                gu.ptr, gu_stride, dn.ptr, d_stride, nullptr))
++        throw std::runtime_error("oversized group accepted");
++    std::printf("PASS gather first=%d n=%d padded=%d, byte-exact, guards intact, declines intact\n", first, n, padded);
++}
++} // namespace
++
++int main() {
++    try {
++        for (bool padded : {false, true}) {
++            run(0, 1, padded); run(0, 7, padded); run(0, 16, padded); run(5, 16, padded);
++        }
++        std::puts("FAILURES: 0");
++        return 0;
++    } catch (const std::exception& error) {
++        std::fprintf(stderr, "FAIL gather: %s\n", error.what());
++        return 1;
++    }
++}
+diff --git a/tests/hip/prefill_gather_schedule.cpp b/tests/hip/prefill_gather_schedule.cpp
+new file mode 100644
+index 0000000..1492446
+--- /dev/null
++++ b/tests/hip/prefill_gather_schedule.cpp
+@@ -0,0 +1,70 @@
++// CPU-only model of the routed lookahead and partial-group lifetime rule.
++// The helper tested here is the same helper the engine calls before stage_one.
++#include "strata/prefill/gather_schedule.hpp"
++#include <array>
++#include <cstdio>
++#include <vector>
++
++namespace {
++bool simulate(const std::vector<bool>& resident, bool guard, bool stream_ahead) {
++    constexpr int stage = 8, group = 16;
++    std::array<int, stage> owners{};
++    std::array<int, group> pending_slots{}, experts{}, source_slots{};
++    std::vector<int> stage_of(resident.size(), -1), output(resident.size(), -1);
++    int next = 0, nslots = 0, first = 0, n = 0;
++    size_t staged = 0;
++    size_t transfers_pending = 0;
++    auto flush = [&]() {
++        for (int i = first; i < n; ++i)
++            output[experts[i]] = source_slots[i] < 0 ? experts[i] : owners[source_slots[i]];
++        first = n; nslots = 0;
++    };
++    for (size_t j = 0; j < resident.size(); ++j) {
++        while (staged < resident.size() &&
++               (stream_ahead ? transfers_pending < stage : staged <= j + stage - 1)) {
++            if (guard && strata::prefill::gather_before_reuse(pending_slots.data(), nslots, next, resident[staged]))
++                flush();
++            if (!resident[staged]) {
++                owners[next] = (int) staged;
++                stage_of[staged] = next;
++                next = (next + 1) % stage;
++                ++transfers_pending;
++            }
++            ++staged;
++        }
++        const int q = (int) j % group;
++        experts[q] = (int) j;
++        source_slots[q] = stage_of[j];
++        n = q + 1;
++        if (stage_of[j] >= 0) {
++            if (nslots == group) return false;
++            pending_slots[nslots++] = stage_of[j];
++            --transfers_pending;
++        }
++        if (q + 1 == group || j + 1 == resident.size()) {
++            flush(); first = n = 0;
++        }
++    }
++    for (size_t i = 0; i < output.size(); ++i) if (output[i] != (int) i) return false;
++    return true;
++}
++} // namespace
++
++int main() {
++    int cases = 0, caught = 0;
++    for (int length : {1, 7, 8, 9, 15, 16, 17, 31, 127, 511}) {
++        for (int pattern = 0; pattern < 20; ++pattern) {
++            std::vector<bool> resident(length);
++            for (int i = 0; i < length; ++i)
++                resident[i] = pattern == 0 || (pattern != 1 && ((i * 37 + i / 7 + pattern * 11) % 23) < pattern);
++            for (bool stream_ahead : {false, true}) {
++                if (!simulate(resident, true, stream_ahead)) { std::puts("FAIL guarded schedule"); return 1; }
++                if (!simulate(resident, false, stream_ahead)) ++caught;
++                ++cases;
++            }
++        }
++    }
++    if (caught == 0) { std::puts("FAIL model did not detect missing lifetime guard"); return 1; }
++    std::printf("PASS %d schedules; detected %d corruptions when the reuse guard is removed\n", cases, caught);
++    return 0;
++}

@@ -1,0 +1,18 @@
+{
+  "checked_date": "2026-10-11",
+  "repo": "agentionai/Qwen3.8-Flash-Next-Gyro-GGUF",
+  "latest_repo_revision": "2cd4f24bcb0fa053149a4e4ec15506ecc64cafab",
+  "local_download_revision": "ae0277dbabcbb12944e6887b356bcc1ef1adbafd",
+  "file_update_commit": "c56e17a087845b4fd03464ebbe16984237d8f4fc",
+  "file_update_date": "2026-10-10T19:48:15+00:00",
+  "file": "Qwen3.8-Flash-Next-Gyro-S-TQ1_0.gguf",
+  "size_bytes": 58487015808,
+  "hub_sha256": "c6ea1b08ca312f99095b27588ba35976b53f948268e7f91e7761926aa01d9c87",
+  "local_whole_file_sha256": "c6ea1b08ca312f99095b27588ba35976b53f948268e7f91e7761926aa01d9c87",
+  "hf_download_dry_run_files": 0,
+  "hf_download_dry_run_bytes": 0,
+  "pack_conversion_source_hashes_checked": 412,
+  "pack_native_tensor_offsets_types_checked": 144,
+  "pack_verification_failures": [],
+  "decision": "Existing GGUF already is the October 10 Gyro-S update. Earlier older-weight label was incorrect; throughput observations unchanged."
+}

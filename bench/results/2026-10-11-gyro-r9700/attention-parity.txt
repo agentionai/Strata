@@ -1,0 +1,9 @@
+Command: HIP_VISIBLE_DEVICES=1 LD_LIBRARY_PATH=/opt/rocm-7.2.1/lib build/hip_prompt_attn_wmma
+Unchanged Strata build at 434e136, R9700 gfx1201, ROCm 7.2.1.
+Isolated numerical test; not a whole-model or answer-quality benchmark.
+
+strata: STRATA_HIP_WMMA: the prompt attention on matrix cores on (gfx1201)
+PASS int8 ctx 32768, 2048 queries: vs FP64 old 2.13e-06 new 2.64e-06 (output scale 3.62); new vs old 6.32e-06 (1.7e-06 of scale); 41.788 -> 5.783 ms per chunk (7.23x)
+PASS int8 ctx 1500, 1500 queries: vs FP64 old 1.78e-06 new 3.57e-06 (output scale 3.57); new vs old 5.25e-06 (1.4e-06 of scale); 13.167 -> 1.896 ms per chunk (6.94x)
+PASS int8 ctx 2100, 256 queries: vs FP64 old 2.03e-06 new 3.13e-06 (output scale 3.61); new vs old 4.05e-06 (1.1e-06 of scale); 5.387 -> 0.767 ms per chunk (7.02x)
+FAILURES: 0

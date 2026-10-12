@@ -1,0 +1,3769 @@
+{
+  "provenance": {
+    "strata_commit": "434e136f73a7da2bfd11cde3bb0aa0acaf1328c6",
+    "llama_commit": "dc255f2a4b6e4211b555b0c05260b2523281f314",
+    "model_revision": "ae0277dbabcbb12944e6887b356bcc1ef1adbafd",
+    "model_sha256": "c6ea1b08ca312f99095b27588ba35976b53f948268e7f91e7761926aa01d9c87",
+    "binary_sha256": "856e84ef41206ca7637ac246864019eb557e22b0d322b20407a33258072a0598",
+    "requests_sha256": "2bfaebeba890527045eb1291af692fed71dbdca7b157201811b28353d3c571cd",
+    "table_sha256": "919da8792202d7f86bbdf4f640280e3582e3c2fce92f200ff737aafb6ee41f23"
+  },
+  "notes": [
+    "Instrumented profile arms are separate from throughput observations.",
+    "Warmup and cold first batched requests are retained, not pooled as warmed samples.",
+    "Reply hashes are not answer-quality grades. All benchmark answers are capped at 128 tokens.",
+    "Host staging and some host stats are cumulative engine fields."
+  ],
+  "throughput": [
+    {
+      "arm": "wmma-off-a",
+      "kind": "warmup",
+      "trial": 0,
+      "expected_prompt_tokens": null,
+      "metrics": {
+        "prompt_tokens": 25.0,
+        "reused": 0.0,
+        "fresh": 25.0,
+        "prefill_ms": 206.0,
+        "prefill_tps": 121.4,
+        "generated": 128.0,
+        "decode_ms": 1465.0,
+        "decode_tps": 87.4
+      },
+      "wall_s": 1.6728301369876135,
+      "finish_reason": "length",
+      "prompt_sha256": "0f6c22cdafbd286c70bba5e05376b443fb0b7c4f71b31872e6ab76cd9e74b6ca",
+      "message_sha256": "a3043bddb41de9ab9a737d015aea900ca7d0b632bec511d9207cfa19eefe897a"
+    },
+    {
+      "arm": "wmma-off-a",
+      "kind": "code",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 1096.0,
+        "prefill_tps": 467.0,
+        "generated": 128.0,
+        "decode_ms": 1439.0,
+        "decode_tps": 88.9
+      },
+      "wall_s": 2.538752515014494,
+      "finish_reason": "length",
+      "prompt_sha256": "ca3c6b1661ac5c3687ed4aafba5d62a429696c97468e0da39ff3bc86085a94d8",
+      "message_sha256": "dcd7897ef0d438f7176d7508b599e9e000e575b95c7f9a64ecdb37cb301d4b1d"
+    },
+    {
+      "arm": "wmma-off-a",
+      "kind": "prose",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 605.0,
+        "prefill_tps": 846.2,
+        "generated": 128.0,
+        "decode_ms": 1715.0,
+        "decode_tps": 74.7
+      },
+      "wall_s": 2.3235199090267997,
+      "finish_reason": "length",
+      "prompt_sha256": "41f1690ae218843e4bf16a455eddf8d9ee35d564a5b48d992ed67650ac6b0b37",
+      "message_sha256": "0092d878e766c55c03dacb6f7bb31082f96b14a8ffa58c4423228ac091a63470"
+    },
+    {
+      "arm": "wmma-off-a",
+      "kind": "json",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 607.0,
+        "prefill_tps": 844.1,
+        "generated": 128.0,
+        "decode_ms": 1314.0,
+        "decode_tps": 97.4
+      },
+      "wall_s": 1.924143639014801,
+      "finish_reason": "length",
+      "prompt_sha256": "085c3a0be6fd4595a1e6b9dc5b606206cc3735917e19adf92d59fa641775b290",
+      "message_sha256": "7bb9cf2a2d058665585bc195856f525ec8f645067dc9b9420eacb40bc15c1b9d"
+    },
+    {
+      "arm": "wmma-off-a",
+      "kind": "code_long",
+      "trial": 1,
+      "expected_prompt_tokens": 4096,
+      "metrics": {
+        "prompt_tokens": 4096.0,
+        "reused": 0.0,
+        "fresh": 4096.0,
+        "prefill_ms": 2643.0,
+        "prefill_tps": 1549.5,
+        "generated": 128.0,
+        "decode_ms": 1519.0,
+        "decode_tps": 84.3
+      },
+      "wall_s": 4.169860605994472,
+      "finish_reason": "length",
+      "prompt_sha256": "ff727cb96612603d11798d07e5b005b2b3175517262a6bb6ad61767d7d07b718",
+      "message_sha256": "99ad8bd54ee06821a0900e21856e26873d37d58bc909a52d06cfb114088b1464"
+    },
+    {
+      "arm": "wmma-off-a",
+      "kind": "code",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 609.0,
+        "prefill_tps": 840.9,
+        "generated": 128.0,
+        "decode_ms": 1471.0,
+        "decode_tps": 87.0
+      },
+      "wall_s": 2.08356027098489,
+      "finish_reason": "length",
+      "prompt_sha256": "939690b6c1ff83fc612f0ca9da13d23182aaa64c6b796147974aa9de0b761983",
+      "message_sha256": "5bbd85bec365558db564681fbed71f44efa0047e16ea5fab002e89179129697e"
+    },
+    {
+      "arm": "wmma-off-a",
+      "kind": "prose",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 607.0,
+        "prefill_tps": 843.5,
+        "generated": 128.0,
+        "decode_ms": 1838.0,
+        "decode_tps": 69.6
+      },
+      "wall_s": 2.4490914340130985,
+      "finish_reason": "length",
+      "prompt_sha256": "b5cc8a26ea010455fa39e06510bce387cf9123f6f6e0af851ca03fcba60d57f3",
+      "message_sha256": "93661bfed484e1d6dd3fc5afa9727980b77d9e5deee7fc67e7944bdf534ec93e"
+    },
+    {
+      "arm": "wmma-off-a",
+      "kind": "json",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 609.0,
+        "prefill_tps": 840.8,
+        "generated": 128.0,
+        "decode_ms": 1333.0,
+        "decode_tps": 96.1
+      },
+      "wall_s": 1.945718217000831,
+      "finish_reason": "length",
+      "prompt_sha256": "95f4455f7a30794988211125121df1a489b1112e9d3d02fae2b7098ef5b8cda5",
+      "message_sha256": "7335302d585d2787a406a42b4fc73b8b4ead221a0a928bd25c8174054bf1b6d1"
+    },
+    {
+      "arm": "wmma-off-a",
+      "kind": "code_long",
+      "trial": 2,
+      "expected_prompt_tokens": 4096,
+      "metrics": {
+        "prompt_tokens": 4096.0,
+        "reused": 0.0,
+        "fresh": 4096.0,
+        "prefill_ms": 2652.0,
+        "prefill_tps": 1544.6,
+        "generated": 128.0,
+        "decode_ms": 1491.0,
+        "decode_tps": 85.9
+      },
+      "wall_s": 4.149856861011358,
+      "finish_reason": "length",
+      "prompt_sha256": "f82a9f44f1e8e61b8752c1b21ebaad60424b12e16f88df7b672dfc49e1fb79af",
+      "message_sha256": "9c0b8278681c561d2de369be5abe6c8f242c8fa4c7be02c40354e5b55df43f32"
+    },
+    {
+      "arm": "wmma-off-a",
+      "kind": "code",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 612.0,
+        "prefill_tps": 836.7,
+        "generated": 128.0,
+        "decode_ms": 1418.0,
+        "decode_tps": 90.3
+      },
+      "wall_s": 2.0332367469964083,
+      "finish_reason": "length",
+      "prompt_sha256": "48bb64c315587b648ab1ed5361870d120137fe4146946bb8a12b99d26fc27585",
+      "message_sha256": "793a91ea38162573e00dd9f07848f4cda999c7ac612a44d93f8650952180c99a"
+    },
+    {
+      "arm": "wmma-off-a",
+      "kind": "prose",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 612.0,
+        "prefill_tps": 837.0,
+        "generated": 128.0,
+        "decode_ms": 1833.0,
+        "decode_tps": 69.8
+      },
+      "wall_s": 2.4483868870011065,
+      "finish_reason": "length",
+      "prompt_sha256": "a39b02bedffefc3f3790052d5e08753b4436606fa333d394099610f95bc79770",
+      "message_sha256": "a0e260122cfa8957cfa9632e304858ca65bbb6c0505c7fec407fecd8c50b5a11"
+    },
+    {
+      "arm": "wmma-off-a",
+      "kind": "json",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 610.0,
+        "prefill_tps": 838.7,
+        "generated": 128.0,
+        "decode_ms": 1408.0,
+        "decode_tps": 90.9
+      },
+      "wall_s": 2.022419771004934,
+      "finish_reason": "length",
+      "prompt_sha256": "a0ecbbd878b21ddc134c0d19e80010c0c71953ffaa33406ad70222582ee77213",
+      "message_sha256": "794c0adddefe5fe5d203b25725013c5f6e6327939275e318eeb8e7b269bfb364"
+    },
+    {
+      "arm": "wmma-off-a",
+      "kind": "code_long",
+      "trial": 3,
+      "expected_prompt_tokens": 4095,
+      "metrics": {
+        "prompt_tokens": 4095.0,
+        "reused": 0.0,
+        "fresh": 4095.0,
+        "prefill_ms": 2647.0,
+        "prefill_tps": 1546.9,
+        "generated": 128.0,
+        "decode_ms": 1381.0,
+        "decode_tps": 92.7
+      },
+      "wall_s": 4.035281057993416,
+      "finish_reason": "length",
+      "prompt_sha256": "4c59e38428e86688f180e266e4ab4ffac576362cb619904bfd059a472b603616",
+      "message_sha256": "dc9cf9169e0323312e947804075192eb45f52f485ba06a8c9b234b059f3e9bec"
+    },
+    {
+      "arm": "wmma-on-a",
+      "kind": "warmup",
+      "trial": 0,
+      "expected_prompt_tokens": null,
+      "metrics": {
+        "prompt_tokens": 25.0,
+        "reused": 0.0,
+        "fresh": 25.0,
+        "prefill_ms": 206.0,
+        "prefill_tps": 121.2,
+        "generated": 128.0,
+        "decode_ms": 1465.0,
+        "decode_tps": 87.4
+      },
+      "wall_s": 1.673718883015681,
+      "finish_reason": "length",
+      "prompt_sha256": "0f6c22cdafbd286c70bba5e05376b443fb0b7c4f71b31872e6ab76cd9e74b6ca",
+      "message_sha256": "a3043bddb41de9ab9a737d015aea900ca7d0b632bec511d9207cfa19eefe897a"
+    },
+    {
+      "arm": "wmma-on-a",
+      "kind": "code",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 1081.0,
+        "prefill_tps": 473.6,
+        "generated": 128.0,
+        "decode_ms": 1363.0,
+        "decode_tps": 93.9
+      },
+      "wall_s": 2.4477205259900074,
+      "finish_reason": "length",
+      "prompt_sha256": "ca3c6b1661ac5c3687ed4aafba5d62a429696c97468e0da39ff3bc86085a94d8",
+      "message_sha256": "3ed1704926130f5d4ae87378250ead3cd3a8c6f8f2be5384f3aa4b022605ca99"
+    },
+    {
+      "arm": "wmma-on-a",
+      "kind": "prose",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 588.0,
+        "prefill_tps": 870.9,
+        "generated": 128.0,
+        "decode_ms": 1685.0,
+        "decode_tps": 76.0
+      },
+      "wall_s": 2.2768516919750255,
+      "finish_reason": "length",
+      "prompt_sha256": "41f1690ae218843e4bf16a455eddf8d9ee35d564a5b48d992ed67650ac6b0b37",
+      "message_sha256": "a5157faae688e7614f4aa31ba1db8418ad49841edc9c9ab1db97049897ecb07e"
+    },
+    {
+      "arm": "wmma-on-a",
+      "kind": "json",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 588.0,
+        "prefill_tps": 870.4,
+        "generated": 128.0,
+        "decode_ms": 1382.0,
+        "decode_tps": 92.6
+      },
+      "wall_s": 1.9745351950114127,
+      "finish_reason": "length",
+      "prompt_sha256": "085c3a0be6fd4595a1e6b9dc5b606206cc3735917e19adf92d59fa641775b290",
+      "message_sha256": "3407967ec54d5bf8bf4ef1653f96fd0ead34107832bbc37c7c4d3cd4381f9d09"
+    },
+    {
+      "arm": "wmma-on-a",
+      "kind": "code_long",
+      "trial": 1,
+      "expected_prompt_tokens": 4096,
+      "metrics": {
+        "prompt_tokens": 4096.0,
+        "reused": 0.0,
+        "fresh": 4096.0,
+        "prefill_ms": 2040.0,
+        "prefill_tps": 2008.2,
+        "generated": 128.0,
+        "decode_ms": 1564.0,
+        "decode_tps": 81.9
+      },
+      "wall_s": 3.610563024005387,
+      "finish_reason": "length",
+      "prompt_sha256": "ff727cb96612603d11798d07e5b005b2b3175517262a6bb6ad61767d7d07b718",
+      "message_sha256": "e125a873aa778c4fa0515ceb7ed8a04c2636e4eba4b2be610ae7457763b86831"
+    },
+    {
+      "arm": "wmma-on-a",
+      "kind": "code",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 586.0,
+        "prefill_tps": 873.0,
+        "generated": 128.0,
+        "decode_ms": 1499.0,
+        "decode_tps": 85.4
+      },
+      "wall_s": 2.0885297780041583,
+      "finish_reason": "length",
+      "prompt_sha256": "939690b6c1ff83fc612f0ca9da13d23182aaa64c6b796147974aa9de0b761983",
+      "message_sha256": "5bbd85bec365558db564681fbed71f44efa0047e16ea5fab002e89179129697e"
+    },
+    {
+      "arm": "wmma-on-a",
+      "kind": "prose",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 591.0,
+        "prefill_tps": 866.3,
+        "generated": 128.0,
+        "decode_ms": 1790.0,
+        "decode_tps": 71.5
+      },
+      "wall_s": 2.385375120997196,
+      "finish_reason": "length",
+      "prompt_sha256": "b5cc8a26ea010455fa39e06510bce387cf9123f6f6e0af851ca03fcba60d57f3",
+      "message_sha256": "7a31bdc6b4d6813648173ae7f04bae445e4ed74533c4b9756225635176da23da"
+    },
+    {
+      "arm": "wmma-on-a",
+      "kind": "json",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 593.0,
+        "prefill_tps": 863.5,
+        "generated": 128.0,
+        "decode_ms": 1374.0,
+        "decode_tps": 93.2
+      },
+      "wall_s": 1.9706768059986643,
+      "finish_reason": "length",
+      "prompt_sha256": "95f4455f7a30794988211125121df1a489b1112e9d3d02fae2b7098ef5b8cda5",
+      "message_sha256": "23f91c6fa57a7320530dd6e3f96a0cbf998dc85c916d465b5952fe47ce2f590c"
+    },
+    {
+      "arm": "wmma-on-a",
+      "kind": "code_long",
+      "trial": 2,
+      "expected_prompt_tokens": 4096,
+      "metrics": {
+        "prompt_tokens": 4096.0,
+        "reused": 0.0,
+        "fresh": 4096.0,
+        "prefill_ms": 2038.0,
+        "prefill_tps": 2010.3,
+        "generated": 128.0,
+        "decode_ms": 1491.0,
+        "decode_tps": 85.9
+      },
+      "wall_s": 3.535671113000717,
+      "finish_reason": "length",
+      "prompt_sha256": "f82a9f44f1e8e61b8752c1b21ebaad60424b12e16f88df7b672dfc49e1fb79af",
+      "message_sha256": "89ac0fbf81ead91d6fee0cf1d8750ec1f1fed566d78a4a345a96a34c9776b35b"
+    },
+    {
+      "arm": "wmma-on-a",
+      "kind": "code",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 592.0,
+        "prefill_tps": 864.1,
+        "generated": 128.0,
+        "decode_ms": 1432.0,
+        "decode_tps": 89.4
+      },
+      "wall_s": 2.027378527011024,
+      "finish_reason": "length",
+      "prompt_sha256": "48bb64c315587b648ab1ed5361870d120137fe4146946bb8a12b99d26fc27585",
+      "message_sha256": "793a91ea38162573e00dd9f07848f4cda999c7ac612a44d93f8650952180c99a"
+    },
+    {
+      "arm": "wmma-on-a",
+      "kind": "prose",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 600.0,
+        "prefill_tps": 853.2,
+        "generated": 128.0,
+        "decode_ms": 1776.0,
+        "decode_tps": 72.1
+      },
+      "wall_s": 2.380577651987551,
+      "finish_reason": "length",
+      "prompt_sha256": "a39b02bedffefc3f3790052d5e08753b4436606fa333d394099610f95bc79770",
+      "message_sha256": "97385b1ee6ab965c8dd87c7a82c75120fc16b1c29c5c8ea2c3283fc38f66cc0f"
+    },
+    {
+      "arm": "wmma-on-a",
+      "kind": "json",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 593.0,
+        "prefill_tps": 863.1,
+        "generated": 128.0,
+        "decode_ms": 1406.0,
+        "decode_tps": 91.0
+      },
+      "wall_s": 2.0035463289823383,
+      "finish_reason": "length",
+      "prompt_sha256": "a0ecbbd878b21ddc134c0d19e80010c0c71953ffaa33406ad70222582ee77213",
+      "message_sha256": "794c0adddefe5fe5d203b25725013c5f6e6327939275e318eeb8e7b269bfb364"
+    },
+    {
+      "arm": "wmma-on-a",
+      "kind": "code_long",
+      "trial": 3,
+      "expected_prompt_tokens": 4095,
+      "metrics": {
+        "prompt_tokens": 4095.0,
+        "reused": 0.0,
+        "fresh": 4095.0,
+        "prefill_ms": 2040.0,
+        "prefill_tps": 2006.9,
+        "generated": 128.0,
+        "decode_ms": 1537.0,
+        "decode_tps": 83.3
+      },
+      "wall_s": 3.584370533004403,
+      "finish_reason": "length",
+      "prompt_sha256": "4c59e38428e86688f180e266e4ab4ffac576362cb619904bfd059a472b603616",
+      "message_sha256": "3dc8689ddcf70d1f49f7e71a652261b8d3983f4966675ef95d8b63112fd98143"
+    },
+    {
+      "arm": "wmma-off-b",
+      "kind": "warmup",
+      "trial": 0,
+      "expected_prompt_tokens": null,
+      "metrics": {
+        "prompt_tokens": 25.0,
+        "reused": 0.0,
+        "fresh": 25.0,
+        "prefill_ms": 206.0,
+        "prefill_tps": 121.1,
+        "generated": 128.0,
+        "decode_ms": 1470.0,
+        "decode_tps": 87.1
+      },
+      "wall_s": 1.6788384440005757,
+      "finish_reason": "length",
+      "prompt_sha256": "0f6c22cdafbd286c70bba5e05376b443fb0b7c4f71b31872e6ab76cd9e74b6ca",
+      "message_sha256": "a3043bddb41de9ab9a737d015aea900ca7d0b632bec511d9207cfa19eefe897a"
+    },
+    {
+      "arm": "wmma-off-b",
+      "kind": "code",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 1109.0,
+        "prefill_tps": 461.6,
+        "generated": 128.0,
+        "decode_ms": 1451.0,
+        "decode_tps": 88.2
+      },
+      "wall_s": 2.5637056280102115,
+      "finish_reason": "length",
+      "prompt_sha256": "ca3c6b1661ac5c3687ed4aafba5d62a429696c97468e0da39ff3bc86085a94d8",
+      "message_sha256": "dcd7897ef0d438f7176d7508b599e9e000e575b95c7f9a64ecdb37cb301d4b1d"
+    },
+    {
+      "arm": "wmma-off-b",
+      "kind": "prose",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 608.0,
+        "prefill_tps": 842.3,
+        "generated": 128.0,
+        "decode_ms": 1715.0,
+        "decode_tps": 74.6
+      },
+      "wall_s": 2.326670788024785,
+      "finish_reason": "length",
+      "prompt_sha256": "41f1690ae218843e4bf16a455eddf8d9ee35d564a5b48d992ed67650ac6b0b37",
+      "message_sha256": "0092d878e766c55c03dacb6f7bb31082f96b14a8ffa58c4423228ac091a63470"
+    },
+    {
+      "arm": "wmma-off-b",
+      "kind": "json",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 609.0,
+        "prefill_tps": 840.8,
+        "generated": 128.0,
+        "decode_ms": 1322.0,
+        "decode_tps": 96.8
+      },
+      "wall_s": 1.9356205630174372,
+      "finish_reason": "length",
+      "prompt_sha256": "085c3a0be6fd4595a1e6b9dc5b606206cc3735917e19adf92d59fa641775b290",
+      "message_sha256": "7bb9cf2a2d058665585bc195856f525ec8f645067dc9b9420eacb40bc15c1b9d"
+    },
+    {
+      "arm": "wmma-off-b",
+      "kind": "code_long",
+      "trial": 1,
+      "expected_prompt_tokens": 4096,
+      "metrics": {
+        "prompt_tokens": 4096.0,
+        "reused": 0.0,
+        "fresh": 4096.0,
+        "prefill_ms": 2650.0,
+        "prefill_tps": 1545.8,
+        "generated": 128.0,
+        "decode_ms": 1520.0,
+        "decode_tps": 84.2
+      },
+      "wall_s": 4.177248773019528,
+      "finish_reason": "length",
+      "prompt_sha256": "ff727cb96612603d11798d07e5b005b2b3175517262a6bb6ad61767d7d07b718",
+      "message_sha256": "99ad8bd54ee06821a0900e21856e26873d37d58bc909a52d06cfb114088b1464"
+    },
+    {
+      "arm": "wmma-off-b",
+      "kind": "code",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 607.0,
+        "prefill_tps": 843.3,
+        "generated": 128.0,
+        "decode_ms": 1481.0,
+        "decode_tps": 86.4
+      },
+      "wall_s": 2.091003586014267,
+      "finish_reason": "length",
+      "prompt_sha256": "939690b6c1ff83fc612f0ca9da13d23182aaa64c6b796147974aa9de0b761983",
+      "message_sha256": "5bbd85bec365558db564681fbed71f44efa0047e16ea5fab002e89179129697e"
+    },
+    {
+      "arm": "wmma-off-b",
+      "kind": "prose",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 609.0,
+        "prefill_tps": 841.3,
+        "generated": 128.0,
+        "decode_ms": 1840.0,
+        "decode_tps": 69.6
+      },
+      "wall_s": 2.4525764280115254,
+      "finish_reason": "length",
+      "prompt_sha256": "b5cc8a26ea010455fa39e06510bce387cf9123f6f6e0af851ca03fcba60d57f3",
+      "message_sha256": "93661bfed484e1d6dd3fc5afa9727980b77d9e5deee7fc67e7944bdf534ec93e"
+    },
+    {
+      "arm": "wmma-off-b",
+      "kind": "json",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 611.0,
+        "prefill_tps": 837.6,
+        "generated": 128.0,
+        "decode_ms": 1333.0,
+        "decode_tps": 96.0
+      },
+      "wall_s": 1.94826009098324,
+      "finish_reason": "length",
+      "prompt_sha256": "95f4455f7a30794988211125121df1a489b1112e9d3d02fae2b7098ef5b8cda5",
+      "message_sha256": "7335302d585d2787a406a42b4fc73b8b4ead221a0a928bd25c8174054bf1b6d1"
+    },
+    {
+      "arm": "wmma-off-b",
+      "kind": "code_long",
+      "trial": 2,
+      "expected_prompt_tokens": 4096,
+      "metrics": {
+        "prompt_tokens": 4096.0,
+        "reused": 0.0,
+        "fresh": 4096.0,
+        "prefill_ms": 2652.0,
+        "prefill_tps": 1544.3,
+        "generated": 128.0,
+        "decode_ms": 1496.0,
+        "decode_tps": 85.6
+      },
+      "wall_s": 4.155511201010086,
+      "finish_reason": "length",
+      "prompt_sha256": "f82a9f44f1e8e61b8752c1b21ebaad60424b12e16f88df7b672dfc49e1fb79af",
+      "message_sha256": "9c0b8278681c561d2de369be5abe6c8f242c8fa4c7be02c40354e5b55df43f32"
+    },
+    {
+      "arm": "wmma-off-b",
+      "kind": "code",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 610.0,
+        "prefill_tps": 839.8,
+        "generated": 128.0,
+        "decode_ms": 1419.0,
+        "decode_tps": 90.2
+      },
+      "wall_s": 2.0319641420210246,
+      "finish_reason": "length",
+      "prompt_sha256": "48bb64c315587b648ab1ed5361870d120137fe4146946bb8a12b99d26fc27585",
+      "message_sha256": "793a91ea38162573e00dd9f07848f4cda999c7ac612a44d93f8650952180c99a"
+    },
+    {
+      "arm": "wmma-off-b",
+      "kind": "prose",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 612.0,
+        "prefill_tps": 837.1,
+        "generated": 128.0,
+        "decode_ms": 1846.0,
+        "decode_tps": 69.4
+      },
+      "wall_s": 2.4614195639733225,
+      "finish_reason": "length",
+      "prompt_sha256": "a39b02bedffefc3f3790052d5e08753b4436606fa333d394099610f95bc79770",
+      "message_sha256": "a0e260122cfa8957cfa9632e304858ca65bbb6c0505c7fec407fecd8c50b5a11"
+    },
+    {
+      "arm": "wmma-off-b",
+      "kind": "json",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 614.0,
+        "prefill_tps": 834.2,
+        "generated": 128.0,
+        "decode_ms": 1415.0,
+        "decode_tps": 90.5
+      },
+      "wall_s": 2.032724871998653,
+      "finish_reason": "length",
+      "prompt_sha256": "a0ecbbd878b21ddc134c0d19e80010c0c71953ffaa33406ad70222582ee77213",
+      "message_sha256": "794c0adddefe5fe5d203b25725013c5f6e6327939275e318eeb8e7b269bfb364"
+    },
+    {
+      "arm": "wmma-off-b",
+      "kind": "code_long",
+      "trial": 3,
+      "expected_prompt_tokens": 4095,
+      "metrics": {
+        "prompt_tokens": 4095.0,
+        "reused": 0.0,
+        "fresh": 4095.0,
+        "prefill_ms": 2653.0,
+        "prefill_tps": 1543.5,
+        "generated": 128.0,
+        "decode_ms": 1386.0,
+        "decode_tps": 92.4
+      },
+      "wall_s": 4.0464407059771474,
+      "finish_reason": "length",
+      "prompt_sha256": "4c59e38428e86688f180e266e4ab4ffac576362cb619904bfd059a472b603616",
+      "message_sha256": "dc9cf9169e0323312e947804075192eb45f52f485ba06a8c9b234b059f3e9bec"
+    },
+    {
+      "arm": "wmma-on-b",
+      "kind": "warmup",
+      "trial": 0,
+      "expected_prompt_tokens": null,
+      "metrics": {
+        "prompt_tokens": 25.0,
+        "reused": 0.0,
+        "fresh": 25.0,
+        "prefill_ms": 209.0,
+        "prefill_tps": 119.8,
+        "generated": 128.0,
+        "decode_ms": 1473.0,
+        "decode_tps": 86.9
+      },
+      "wall_s": 1.6836595800123177,
+      "finish_reason": "length",
+      "prompt_sha256": "0f6c22cdafbd286c70bba5e05376b443fb0b7c4f71b31872e6ab76cd9e74b6ca",
+      "message_sha256": "a3043bddb41de9ab9a737d015aea900ca7d0b632bec511d9207cfa19eefe897a"
+    },
+    {
+      "arm": "wmma-on-b",
+      "kind": "code",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 1084.0,
+        "prefill_tps": 472.5,
+        "generated": 128.0,
+        "decode_ms": 1362.0,
+        "decode_tps": 94.0
+      },
+      "wall_s": 2.4490386970283,
+      "finish_reason": "length",
+      "prompt_sha256": "ca3c6b1661ac5c3687ed4aafba5d62a429696c97468e0da39ff3bc86085a94d8",
+      "message_sha256": "3ed1704926130f5d4ae87378250ead3cd3a8c6f8f2be5384f3aa4b022605ca99"
+    },
+    {
+      "arm": "wmma-on-b",
+      "kind": "prose",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 588.0,
+        "prefill_tps": 871.2,
+        "generated": 128.0,
+        "decode_ms": 1696.0,
+        "decode_tps": 75.5
+      },
+      "wall_s": 2.2879226569784805,
+      "finish_reason": "length",
+      "prompt_sha256": "41f1690ae218843e4bf16a455eddf8d9ee35d564a5b48d992ed67650ac6b0b37",
+      "message_sha256": "a5157faae688e7614f4aa31ba1db8418ad49841edc9c9ab1db97049897ecb07e"
+    },
+    {
+      "arm": "wmma-on-b",
+      "kind": "json",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 590.0,
+        "prefill_tps": 867.7,
+        "generated": 128.0,
+        "decode_ms": 1392.0,
+        "decode_tps": 91.9
+      },
+      "wall_s": 1.9866214480134659,
+      "finish_reason": "length",
+      "prompt_sha256": "085c3a0be6fd4595a1e6b9dc5b606206cc3735917e19adf92d59fa641775b290",
+      "message_sha256": "3407967ec54d5bf8bf4ef1653f96fd0ead34107832bbc37c7c4d3cd4381f9d09"
+    },
+    {
+      "arm": "wmma-on-b",
+      "kind": "code_long",
+      "trial": 1,
+      "expected_prompt_tokens": 4096,
+      "metrics": {
+        "prompt_tokens": 4096.0,
+        "reused": 0.0,
+        "fresh": 4096.0,
+        "prefill_ms": 2037.0,
+        "prefill_tps": 2010.5,
+        "generated": 128.0,
+        "decode_ms": 1563.0,
+        "decode_tps": 81.9
+      },
+      "wall_s": 3.6078880580025725,
+      "finish_reason": "length",
+      "prompt_sha256": "ff727cb96612603d11798d07e5b005b2b3175517262a6bb6ad61767d7d07b718",
+      "message_sha256": "e125a873aa778c4fa0515ceb7ed8a04c2636e4eba4b2be610ae7457763b86831"
+    },
+    {
+      "arm": "wmma-on-b",
+      "kind": "code",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 589.0,
+        "prefill_tps": 869.0,
+        "generated": 128.0,
+        "decode_ms": 1507.0,
+        "decode_tps": 84.9
+      },
+      "wall_s": 2.0993588370038196,
+      "finish_reason": "length",
+      "prompt_sha256": "939690b6c1ff83fc612f0ca9da13d23182aaa64c6b796147974aa9de0b761983",
+      "message_sha256": "5bbd85bec365558db564681fbed71f44efa0047e16ea5fab002e89179129697e"
+    },
+    {
+      "arm": "wmma-on-b",
+      "kind": "prose",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 592.0,
+        "prefill_tps": 864.7,
+        "generated": 128.0,
+        "decode_ms": 1797.0,
+        "decode_tps": 71.2
+      },
+      "wall_s": 2.393536559975473,
+      "finish_reason": "length",
+      "prompt_sha256": "b5cc8a26ea010455fa39e06510bce387cf9123f6f6e0af851ca03fcba60d57f3",
+      "message_sha256": "7a31bdc6b4d6813648173ae7f04bae445e4ed74533c4b9756225635176da23da"
+    },
+    {
+      "arm": "wmma-on-b",
+      "kind": "json",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 593.0,
+        "prefill_tps": 864.1,
+        "generated": 128.0,
+        "decode_ms": 1374.0,
+        "decode_tps": 93.1
+      },
+      "wall_s": 1.9707740859885234,
+      "finish_reason": "length",
+      "prompt_sha256": "95f4455f7a30794988211125121df1a489b1112e9d3d02fae2b7098ef5b8cda5",
+      "message_sha256": "23f91c6fa57a7320530dd6e3f96a0cbf998dc85c916d465b5952fe47ce2f590c"
+    },
+    {
+      "arm": "wmma-on-b",
+      "kind": "code_long",
+      "trial": 2,
+      "expected_prompt_tokens": 4096,
+      "metrics": {
+        "prompt_tokens": 4096.0,
+        "reused": 0.0,
+        "fresh": 4096.0,
+        "prefill_ms": 2039.0,
+        "prefill_tps": 2008.5,
+        "generated": 128.0,
+        "decode_ms": 1493.0,
+        "decode_tps": 85.7
+      },
+      "wall_s": 3.5394391189911403,
+      "finish_reason": "length",
+      "prompt_sha256": "f82a9f44f1e8e61b8752c1b21ebaad60424b12e16f88df7b672dfc49e1fb79af",
+      "message_sha256": "89ac0fbf81ead91d6fee0cf1d8750ec1f1fed566d78a4a345a96a34c9776b35b"
+    },
+    {
+      "arm": "wmma-on-b",
+      "kind": "code",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 591.0,
+        "prefill_tps": 866.2,
+        "generated": 128.0,
+        "decode_ms": 1425.0,
+        "decode_tps": 89.8
+      },
+      "wall_s": 2.0195248399977572,
+      "finish_reason": "length",
+      "prompt_sha256": "48bb64c315587b648ab1ed5361870d120137fe4146946bb8a12b99d26fc27585",
+      "message_sha256": "793a91ea38162573e00dd9f07848f4cda999c7ac612a44d93f8650952180c99a"
+    },
+    {
+      "arm": "wmma-on-b",
+      "kind": "prose",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 595.0,
+        "prefill_tps": 861.1,
+        "generated": 128.0,
+        "decode_ms": 1782.0,
+        "decode_tps": 71.8
+      },
+      "wall_s": 2.380699530011043,
+      "finish_reason": "length",
+      "prompt_sha256": "a39b02bedffefc3f3790052d5e08753b4436606fa333d394099610f95bc79770",
+      "message_sha256": "97385b1ee6ab965c8dd87c7a82c75120fc16b1c29c5c8ea2c3283fc38f66cc0f"
+    },
+    {
+      "arm": "wmma-on-b",
+      "kind": "json",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 597.0,
+        "prefill_tps": 857.6,
+        "generated": 128.0,
+        "decode_ms": 1410.0,
+        "decode_tps": 90.8
+      },
+      "wall_s": 2.0114142409875058,
+      "finish_reason": "length",
+      "prompt_sha256": "a0ecbbd878b21ddc134c0d19e80010c0c71953ffaa33406ad70222582ee77213",
+      "message_sha256": "794c0adddefe5fe5d203b25725013c5f6e6327939275e318eeb8e7b269bfb364"
+    },
+    {
+      "arm": "wmma-on-b",
+      "kind": "code_long",
+      "trial": 3,
+      "expected_prompt_tokens": 4095,
+      "metrics": {
+        "prompt_tokens": 4095.0,
+        "reused": 0.0,
+        "fresh": 4095.0,
+        "prefill_ms": 2037.0,
+        "prefill_tps": 2010.2,
+        "generated": 128.0,
+        "decode_ms": 1545.0,
+        "decode_tps": 82.8
+      },
+      "wall_s": 3.5898271830228623,
+      "finish_reason": "length",
+      "prompt_sha256": "4c59e38428e86688f180e266e4ab4ffac576362cb619904bfd059a472b603616",
+      "message_sha256": "3dc8689ddcf70d1f49f7e71a652261b8d3983f4966675ef95d8b63112fd98143"
+    },
+    {
+      "arm": "portable-off",
+      "kind": "warmup",
+      "trial": 0,
+      "expected_prompt_tokens": null,
+      "metrics": {
+        "prompt_tokens": 25.0,
+        "reused": 0.0,
+        "fresh": 25.0,
+        "prefill_ms": 205.0,
+        "prefill_tps": 122.2,
+        "generated": 128.0,
+        "decode_ms": 1468.0,
+        "decode_tps": 87.2
+      },
+      "wall_s": 1.684725528000854,
+      "finish_reason": "length",
+      "prompt_sha256": "0f6c22cdafbd286c70bba5e05376b443fb0b7c4f71b31872e6ab76cd9e74b6ca",
+      "message_sha256": "a3043bddb41de9ab9a737d015aea900ca7d0b632bec511d9207cfa19eefe897a"
+    },
+    {
+      "arm": "portable-off",
+      "kind": "code",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 1096.0,
+        "prefill_tps": 467.2,
+        "generated": 128.0,
+        "decode_ms": 1452.0,
+        "decode_tps": 88.2
+      },
+      "wall_s": 2.5509808080096263,
+      "finish_reason": "length",
+      "prompt_sha256": "ca3c6b1661ac5c3687ed4aafba5d62a429696c97468e0da39ff3bc86085a94d8",
+      "message_sha256": "dcd7897ef0d438f7176d7508b599e9e000e575b95c7f9a64ecdb37cb301d4b1d"
+    },
+    {
+      "arm": "portable-off",
+      "kind": "prose",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 605.0,
+        "prefill_tps": 846.4,
+        "generated": 128.0,
+        "decode_ms": 1714.0,
+        "decode_tps": 74.7
+      },
+      "wall_s": 2.3228626459895167,
+      "finish_reason": "length",
+      "prompt_sha256": "41f1690ae218843e4bf16a455eddf8d9ee35d564a5b48d992ed67650ac6b0b37",
+      "message_sha256": "0092d878e766c55c03dacb6f7bb31082f96b14a8ffa58c4423228ac091a63470"
+    },
+    {
+      "arm": "portable-off",
+      "kind": "json",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 607.0,
+        "prefill_tps": 842.8,
+        "generated": 128.0,
+        "decode_ms": 1319.0,
+        "decode_tps": 97.1
+      },
+      "wall_s": 1.9303704529884271,
+      "finish_reason": "length",
+      "prompt_sha256": "085c3a0be6fd4595a1e6b9dc5b606206cc3735917e19adf92d59fa641775b290",
+      "message_sha256": "7bb9cf2a2d058665585bc195856f525ec8f645067dc9b9420eacb40bc15c1b9d"
+    },
+    {
+      "arm": "portable-off",
+      "kind": "code_long",
+      "trial": 1,
+      "expected_prompt_tokens": 4096,
+      "metrics": {
+        "prompt_tokens": 4096.0,
+        "reused": 0.0,
+        "fresh": 4096.0,
+        "prefill_ms": 2649.0,
+        "prefill_tps": 1546.4,
+        "generated": 128.0,
+        "decode_ms": 1523.0,
+        "decode_tps": 84.0
+      },
+      "wall_s": 4.1792815680091735,
+      "finish_reason": "length",
+      "prompt_sha256": "ff727cb96612603d11798d07e5b005b2b3175517262a6bb6ad61767d7d07b718",
+      "message_sha256": "99ad8bd54ee06821a0900e21856e26873d37d58bc909a52d06cfb114088b1464"
+    },
+    {
+      "arm": "portable-off",
+      "kind": "code",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 608.0,
+        "prefill_tps": 841.6,
+        "generated": 128.0,
+        "decode_ms": 1476.0,
+        "decode_tps": 86.7
+      },
+      "wall_s": 2.0871682100114413,
+      "finish_reason": "length",
+      "prompt_sha256": "939690b6c1ff83fc612f0ca9da13d23182aaa64c6b796147974aa9de0b761983",
+      "message_sha256": "5bbd85bec365558db564681fbed71f44efa0047e16ea5fab002e89179129697e"
+    },
+    {
+      "arm": "portable-off",
+      "kind": "prose",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 609.0,
+        "prefill_tps": 840.1,
+        "generated": 128.0,
+        "decode_ms": 1846.0,
+        "decode_tps": 69.4
+      },
+      "wall_s": 2.4592797399964184,
+      "finish_reason": "length",
+      "prompt_sha256": "b5cc8a26ea010455fa39e06510bce387cf9123f6f6e0af851ca03fcba60d57f3",
+      "message_sha256": "93661bfed484e1d6dd3fc5afa9727980b77d9e5deee7fc67e7944bdf534ec93e"
+    },
+    {
+      "arm": "portable-off",
+      "kind": "json",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 610.0,
+        "prefill_tps": 839.9,
+        "generated": 128.0,
+        "decode_ms": 1333.0,
+        "decode_tps": 96.0
+      },
+      "wall_s": 1.9469220470055006,
+      "finish_reason": "length",
+      "prompt_sha256": "95f4455f7a30794988211125121df1a489b1112e9d3d02fae2b7098ef5b8cda5",
+      "message_sha256": "7335302d585d2787a406a42b4fc73b8b4ead221a0a928bd25c8174054bf1b6d1"
+    },
+    {
+      "arm": "portable-off",
+      "kind": "code_long",
+      "trial": 2,
+      "expected_prompt_tokens": 4096,
+      "metrics": {
+        "prompt_tokens": 4096.0,
+        "reused": 0.0,
+        "fresh": 4096.0,
+        "prefill_ms": 2651.0,
+        "prefill_tps": 1544.8,
+        "generated": 128.0,
+        "decode_ms": 1495.0,
+        "decode_tps": 85.6
+      },
+      "wall_s": 4.153333341004327,
+      "finish_reason": "length",
+      "prompt_sha256": "f82a9f44f1e8e61b8752c1b21ebaad60424b12e16f88df7b672dfc49e1fb79af",
+      "message_sha256": "9c0b8278681c561d2de369be5abe6c8f242c8fa4c7be02c40354e5b55df43f32"
+    },
+    {
+      "arm": "portable-off",
+      "kind": "code",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 610.0,
+        "prefill_tps": 839.8,
+        "generated": 128.0,
+        "decode_ms": 1423.0,
+        "decode_tps": 90.0
+      },
+      "wall_s": 2.0356801570160314,
+      "finish_reason": "length",
+      "prompt_sha256": "48bb64c315587b648ab1ed5361870d120137fe4146946bb8a12b99d26fc27585",
+      "message_sha256": "793a91ea38162573e00dd9f07848f4cda999c7ac612a44d93f8650952180c99a"
+    },
+    {
+      "arm": "portable-off",
+      "kind": "prose",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 613.0,
+        "prefill_tps": 835.2,
+        "generated": 128.0,
+        "decode_ms": 1844.0,
+        "decode_tps": 69.4
+      },
+      "wall_s": 2.4613126790209208,
+      "finish_reason": "length",
+      "prompt_sha256": "a39b02bedffefc3f3790052d5e08753b4436606fa333d394099610f95bc79770",
+      "message_sha256": "a0e260122cfa8957cfa9632e304858ca65bbb6c0505c7fec407fecd8c50b5a11"
+    },
+    {
+      "arm": "portable-off",
+      "kind": "json",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 613.0,
+        "prefill_tps": 835.9,
+        "generated": 128.0,
+        "decode_ms": 1413.0,
+        "decode_tps": 90.6
+      },
+      "wall_s": 2.029541057010647,
+      "finish_reason": "length",
+      "prompt_sha256": "a0ecbbd878b21ddc134c0d19e80010c0c71953ffaa33406ad70222582ee77213",
+      "message_sha256": "794c0adddefe5fe5d203b25725013c5f6e6327939275e318eeb8e7b269bfb364"
+    },
+    {
+      "arm": "portable-off",
+      "kind": "code_long",
+      "trial": 3,
+      "expected_prompt_tokens": 4095,
+      "metrics": {
+        "prompt_tokens": 4095.0,
+        "reused": 0.0,
+        "fresh": 4095.0,
+        "prefill_ms": 2656.0,
+        "prefill_tps": 1541.9,
+        "generated": 128.0,
+        "decode_ms": 1395.0,
+        "decode_tps": 91.8
+      },
+      "wall_s": 4.057828524004435,
+      "finish_reason": "length",
+      "prompt_sha256": "4c59e38428e86688f180e266e4ab4ffac576362cb619904bfd059a472b603616",
+      "message_sha256": "dc9cf9169e0323312e947804075192eb45f52f485ba06a8c9b234b059f3e9bec"
+    },
+    {
+      "arm": "portable-on",
+      "kind": "warmup",
+      "trial": 0,
+      "expected_prompt_tokens": null,
+      "metrics": {
+        "prompt_tokens": 25.0,
+        "reused": 0.0,
+        "fresh": 25.0,
+        "prefill_ms": 208.0,
+        "prefill_tps": 120.3,
+        "generated": 128.0,
+        "decode_ms": 1474.0,
+        "decode_tps": 86.9
+      },
+      "wall_s": 1.6940679159888532,
+      "finish_reason": "length",
+      "prompt_sha256": "0f6c22cdafbd286c70bba5e05376b443fb0b7c4f71b31872e6ab76cd9e74b6ca",
+      "message_sha256": "a3043bddb41de9ab9a737d015aea900ca7d0b632bec511d9207cfa19eefe897a"
+    },
+    {
+      "arm": "portable-on",
+      "kind": "code",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 1089.0,
+        "prefill_tps": 470.3,
+        "generated": 128.0,
+        "decode_ms": 1363.0,
+        "decode_tps": 93.9
+      },
+      "wall_s": 2.4545664259931073,
+      "finish_reason": "length",
+      "prompt_sha256": "ca3c6b1661ac5c3687ed4aafba5d62a429696c97468e0da39ff3bc86085a94d8",
+      "message_sha256": "3ed1704926130f5d4ae87378250ead3cd3a8c6f8f2be5384f3aa4b022605ca99"
+    },
+    {
+      "arm": "portable-on",
+      "kind": "prose",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 588.0,
+        "prefill_tps": 871.3,
+        "generated": 128.0,
+        "decode_ms": 1696.0,
+        "decode_tps": 75.5
+      },
+      "wall_s": 2.2876428840099834,
+      "finish_reason": "length",
+      "prompt_sha256": "41f1690ae218843e4bf16a455eddf8d9ee35d564a5b48d992ed67650ac6b0b37",
+      "message_sha256": "a5157faae688e7614f4aa31ba1db8418ad49841edc9c9ab1db97049897ecb07e"
+    },
+    {
+      "arm": "portable-on",
+      "kind": "json",
+      "trial": 1,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 591.0,
+        "prefill_tps": 866.7,
+        "generated": 128.0,
+        "decode_ms": 1433.0,
+        "decode_tps": 89.3
+      },
+      "wall_s": 2.0284525729948655,
+      "finish_reason": "length",
+      "prompt_sha256": "085c3a0be6fd4595a1e6b9dc5b606206cc3735917e19adf92d59fa641775b290",
+      "message_sha256": "3407967ec54d5bf8bf4ef1653f96fd0ead34107832bbc37c7c4d3cd4381f9d09"
+    },
+    {
+      "arm": "portable-on",
+      "kind": "code_long",
+      "trial": 1,
+      "expected_prompt_tokens": 4096,
+      "metrics": {
+        "prompt_tokens": 4096.0,
+        "reused": 0.0,
+        "fresh": 4096.0,
+        "prefill_ms": 2038.0,
+        "prefill_tps": 2009.4,
+        "generated": 128.0,
+        "decode_ms": 1565.0,
+        "decode_tps": 81.8
+      },
+      "wall_s": 3.610338007012615,
+      "finish_reason": "length",
+      "prompt_sha256": "ff727cb96612603d11798d07e5b005b2b3175517262a6bb6ad61767d7d07b718",
+      "message_sha256": "e125a873aa778c4fa0515ceb7ed8a04c2636e4eba4b2be610ae7457763b86831"
+    },
+    {
+      "arm": "portable-on",
+      "kind": "code",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 589.0,
+        "prefill_tps": 868.6,
+        "generated": 128.0,
+        "decode_ms": 1505.0,
+        "decode_tps": 85.1
+      },
+      "wall_s": 2.0975376370188314,
+      "finish_reason": "length",
+      "prompt_sha256": "939690b6c1ff83fc612f0ca9da13d23182aaa64c6b796147974aa9de0b761983",
+      "message_sha256": "5bbd85bec365558db564681fbed71f44efa0047e16ea5fab002e89179129697e"
+    },
+    {
+      "arm": "portable-on",
+      "kind": "prose",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 590.0,
+        "prefill_tps": 867.1,
+        "generated": 128.0,
+        "decode_ms": 1799.0,
+        "decode_tps": 71.2
+      },
+      "wall_s": 2.3934090420079883,
+      "finish_reason": "length",
+      "prompt_sha256": "b5cc8a26ea010455fa39e06510bce387cf9123f6f6e0af851ca03fcba60d57f3",
+      "message_sha256": "7a31bdc6b4d6813648173ae7f04bae445e4ed74533c4b9756225635176da23da"
+    },
+    {
+      "arm": "portable-on",
+      "kind": "json",
+      "trial": 2,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 594.0,
+        "prefill_tps": 862.1,
+        "generated": 128.0,
+        "decode_ms": 1377.0,
+        "decode_tps": 93.0
+      },
+      "wall_s": 1.974524666002253,
+      "finish_reason": "length",
+      "prompt_sha256": "95f4455f7a30794988211125121df1a489b1112e9d3d02fae2b7098ef5b8cda5",
+      "message_sha256": "23f91c6fa57a7320530dd6e3f96a0cbf998dc85c916d465b5952fe47ce2f590c"
+    },
+    {
+      "arm": "portable-on",
+      "kind": "code_long",
+      "trial": 2,
+      "expected_prompt_tokens": 4096,
+      "metrics": {
+        "prompt_tokens": 4096.0,
+        "reused": 0.0,
+        "fresh": 4096.0,
+        "prefill_ms": 2040.0,
+        "prefill_tps": 2008.0,
+        "generated": 128.0,
+        "decode_ms": 1494.0,
+        "decode_tps": 85.7
+      },
+      "wall_s": 3.5412686149938963,
+      "finish_reason": "length",
+      "prompt_sha256": "f82a9f44f1e8e61b8752c1b21ebaad60424b12e16f88df7b672dfc49e1fb79af",
+      "message_sha256": "89ac0fbf81ead91d6fee0cf1d8750ec1f1fed566d78a4a345a96a34c9776b35b"
+    },
+    {
+      "arm": "portable-on",
+      "kind": "code",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 592.0,
+        "prefill_tps": 865.1,
+        "generated": 128.0,
+        "decode_ms": 1431.0,
+        "decode_tps": 89.4
+      },
+      "wall_s": 2.0261859119927976,
+      "finish_reason": "length",
+      "prompt_sha256": "48bb64c315587b648ab1ed5361870d120137fe4146946bb8a12b99d26fc27585",
+      "message_sha256": "793a91ea38162573e00dd9f07848f4cda999c7ac612a44d93f8650952180c99a"
+    },
+    {
+      "arm": "portable-on",
+      "kind": "prose",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 595.0,
+        "prefill_tps": 860.0,
+        "generated": 128.0,
+        "decode_ms": 1777.0,
+        "decode_tps": 72.0
+      },
+      "wall_s": 2.376470307004638,
+      "finish_reason": "length",
+      "prompt_sha256": "a39b02bedffefc3f3790052d5e08753b4436606fa333d394099610f95bc79770",
+      "message_sha256": "97385b1ee6ab965c8dd87c7a82c75120fc16b1c29c5c8ea2c3283fc38f66cc0f"
+    },
+    {
+      "arm": "portable-on",
+      "kind": "json",
+      "trial": 3,
+      "expected_prompt_tokens": 512,
+      "metrics": {
+        "prompt_tokens": 512.0,
+        "reused": 0.0,
+        "fresh": 512.0,
+        "prefill_ms": 594.0,
+        "prefill_tps": 862.1,
+        "generated": 128.0,
+        "decode_ms": 1409.0,
+        "decode_tps": 90.8
+      },
+      "wall_s": 2.006875933991978,
+      "finish_reason": "length",
+      "prompt_sha256": "a0ecbbd878b21ddc134c0d19e80010c0c71953ffaa33406ad70222582ee77213",
+      "message_sha256": "794c0adddefe5fe5d203b25725013c5f6e6327939275e318eeb8e7b269bfb364"
+    },
+    {
+      "arm": "portable-on",
+      "kind": "code_long",
+      "trial": 3,
+      "expected_prompt_tokens": 4095,
+      "metrics": {
+        "prompt_tokens": 4095.0,
+        "reused": 0.0,
+        "fresh": 4095.0,
+        "prefill_ms": 2040.0,
+        "prefill_tps": 2007.5,
+        "generated": 128.0,
+        "decode_ms": 1540.0,
+        "decode_tps": 83.1
+      },
+      "wall_s": 3.587013948999811,
+      "finish_reason": "length",
+      "prompt_sha256": "4c59e38428e86688f180e266e4ab4ffac576362cb619904bfd059a472b603616",
+      "message_sha256": "3dc8689ddcf70d1f49f7e71a652261b8d3983f4966675ef95d8b63112fd98143"
+    }
+  ],
+  "profiles": {
+    "profile-off": [
+      {
+        "line": 39,
+        "tokens": 505,
+        "gpu_ms": 1088.0,
+        "wall_ms": 1094.0,
+        "host_staging_ms": 0.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "hc read": {
+            "ms": 311.0,
+            "percent": 28.5
+          },
+          "gdn": {
+            "ms": 216.0,
+            "percent": 19.9
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 1.1
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.0
+          },
+          "qsa attn": {
+            "ms": 23.0,
+            "percent": 2.1
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 0.7
+          },
+          "host grouping": {
+            "ms": 6.0,
+            "percent": 0.6
+          },
+          "gather": {
+            "ms": 5.0,
+            "percent": 0.4
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "dequant": {
+            "ms": 187.0,
+            "percent": 17.2
+          },
+          "gemm gate/up": {
+            "ms": 174.0,
+            "percent": 16.0
+          },
+          "gemm down": {
+            "ms": 100.0,
+            "percent": 9.2
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 0.9
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.4
+          },
+          "gdn recurrence": {
+            "ms": 19.0,
+            "percent": 1.7
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 0.9
+          }
+        },
+        "host": {
+          "setup_ms": 2.0,
+          "wait_ms": 9.0,
+          "after_chunk_ms": 4.0,
+          "ple_ms": 0.0
+        }
+      },
+      {
+        "line": 42,
+        "tokens": 505,
+        "gpu_ms": 589.0,
+        "wall_ms": 590.0,
+        "host_staging_ms": 1.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.8
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.4
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.0
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 22.0,
+            "percent": 3.8
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 7.0,
+            "percent": 1.2
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 185.0,
+            "percent": 31.4
+          },
+          "gemm gate/up": {
+            "ms": 168.0,
+            "percent": 28.5
+          },
+          "gemm down": {
+            "ms": 96.0,
+            "percent": 16.3
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.6
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.6
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.0
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.7
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 9.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 3.0
+        }
+      },
+      {
+        "line": 45,
+        "tokens": 505,
+        "gpu_ms": 591.0,
+        "wall_ms": 592.0,
+        "host_staging_ms": 1.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.8
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.4
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.0
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 22.0,
+            "percent": 3.7
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 7.0,
+            "percent": 1.2
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.6
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 187.0,
+            "percent": 31.6
+          },
+          "gemm gate/up": {
+            "ms": 168.0,
+            "percent": 28.4
+          },
+          "gemm down": {
+            "ms": 97.0,
+            "percent": 16.4
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.6
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.6
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.0
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.7
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 8.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 6.0
+        }
+      },
+      {
+        "line": 49,
+        "tokens": 4089,
+        "gpu_ms": 2691.0,
+        "wall_ms": 2699.0,
+        "host_staging_ms": 6.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 1.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 157.0,
+            "percent": 5.8
+          },
+          "gdn": {
+            "ms": 137.0,
+            "percent": 5.1
+          },
+          "qsa proj": {
+            "ms": 80.0,
+            "percent": 3.0
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 15.0,
+            "percent": 0.5
+          },
+          "qsa attn": {
+            "ms": 702.0,
+            "percent": 26.1
+          },
+          "router+shared": {
+            "ms": 31.0,
+            "percent": 1.1
+          },
+          "host grouping": {
+            "ms": 13.0,
+            "percent": 0.5
+          },
+          "gather": {
+            "ms": 30.0,
+            "percent": 1.1
+          },
+          "wait copy": {
+            "ms": 7.0,
+            "percent": 0.3
+          },
+          "dequant": {
+            "ms": 293.0,
+            "percent": 10.9
+          },
+          "gemm gate/up": {
+            "ms": 564.0,
+            "percent": 21.0
+          },
+          "gemm down": {
+            "ms": 303.0,
+            "percent": 11.3
+          },
+          "combine": {
+            "ms": 78.0,
+            "percent": 2.9
+          },
+          "ple": {
+            "ms": 7.0,
+            "percent": 0.3
+          },
+          "gdn conv+gates": {
+            "ms": 30.0,
+            "percent": 1.1
+          },
+          "gdn recurrence": {
+            "ms": 174.0,
+            "percent": 6.5
+          },
+          "gdn out proj": {
+            "ms": 70.0,
+            "percent": 2.6
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 20.0,
+          "after_chunk_ms": 7.0,
+          "ple_ms": 20.0
+        }
+      },
+      {
+        "line": 52,
+        "tokens": 505,
+        "gpu_ms": 593.0,
+        "wall_ms": 595.0,
+        "host_staging_ms": 6.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.8
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.4
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.0
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 22.0,
+            "percent": 3.8
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 7.0,
+            "percent": 1.2
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 187.0,
+            "percent": 31.5
+          },
+          "gemm gate/up": {
+            "ms": 170.0,
+            "percent": 28.6
+          },
+          "gemm down": {
+            "ms": 97.0,
+            "percent": 16.4
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.6
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.6
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.0
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.7
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 9.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 21.0
+        }
+      },
+      {
+        "line": 55,
+        "tokens": 505,
+        "gpu_ms": 595.0,
+        "wall_ms": 596.0,
+        "host_staging_ms": 7.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.8
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.4
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.0
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 23.0,
+            "percent": 3.8
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 7.0,
+            "percent": 1.2
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 187.0,
+            "percent": 31.4
+          },
+          "gemm gate/up": {
+            "ms": 171.0,
+            "percent": 28.7
+          },
+          "gemm down": {
+            "ms": 97.0,
+            "percent": 16.3
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.6
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.6
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.0
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.7
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 9.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 21.0
+        }
+      },
+      {
+        "line": 59,
+        "tokens": 505,
+        "gpu_ms": 597.0,
+        "wall_ms": 599.0,
+        "host_staging_ms": 7.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.7
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.4
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.0
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 23.0,
+            "percent": 3.8
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.3
+          },
+          "host grouping": {
+            "ms": 7.0,
+            "percent": 1.2
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.6
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 189.0,
+            "percent": 31.6
+          },
+          "gemm gate/up": {
+            "ms": 171.0,
+            "percent": 28.5
+          },
+          "gemm down": {
+            "ms": 98.0,
+            "percent": 16.3
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.6
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.6
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.0
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.7
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 8.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 21.0
+        }
+      },
+      {
+        "line": 63,
+        "tokens": 4089,
+        "gpu_ms": 2698.0,
+        "wall_ms": 2705.0,
+        "host_staging_ms": 11.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 1.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 157.0,
+            "percent": 5.8
+          },
+          "gdn": {
+            "ms": 137.0,
+            "percent": 5.1
+          },
+          "qsa proj": {
+            "ms": 80.0,
+            "percent": 3.0
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 15.0,
+            "percent": 0.5
+          },
+          "qsa attn": {
+            "ms": 708.0,
+            "percent": 26.2
+          },
+          "router+shared": {
+            "ms": 31.0,
+            "percent": 1.1
+          },
+          "host grouping": {
+            "ms": 14.0,
+            "percent": 0.5
+          },
+          "gather": {
+            "ms": 30.0,
+            "percent": 1.1
+          },
+          "wait copy": {
+            "ms": 7.0,
+            "percent": 0.3
+          },
+          "dequant": {
+            "ms": 291.0,
+            "percent": 10.8
+          },
+          "gemm gate/up": {
+            "ms": 564.0,
+            "percent": 20.9
+          },
+          "gemm down": {
+            "ms": 304.0,
+            "percent": 11.3
+          },
+          "combine": {
+            "ms": 78.0,
+            "percent": 2.9
+          },
+          "ple": {
+            "ms": 7.0,
+            "percent": 0.3
+          },
+          "gdn conv+gates": {
+            "ms": 30.0,
+            "percent": 1.1
+          },
+          "gdn recurrence": {
+            "ms": 175.0,
+            "percent": 6.5
+          },
+          "gdn out proj": {
+            "ms": 70.0,
+            "percent": 2.6
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 20.0,
+          "after_chunk_ms": 7.0,
+          "ple_ms": 21.0
+        }
+      },
+      {
+        "line": 66,
+        "tokens": 505,
+        "gpu_ms": 596.0,
+        "wall_ms": 597.0,
+        "host_staging_ms": 12.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.7
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.4
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.0
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 23.0,
+            "percent": 3.8
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.3
+          },
+          "host grouping": {
+            "ms": 7.0,
+            "percent": 1.2
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 187.0,
+            "percent": 31.5
+          },
+          "gemm gate/up": {
+            "ms": 170.0,
+            "percent": 28.6
+          },
+          "gemm down": {
+            "ms": 98.0,
+            "percent": 16.4
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.6
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.6
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.0
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.7
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 10.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 21.0
+        }
+      },
+      {
+        "line": 69,
+        "tokens": 505,
+        "gpu_ms": 601.0,
+        "wall_ms": 603.0,
+        "host_staging_ms": 12.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.7
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.4
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.0
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 23.0,
+            "percent": 3.8
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.3
+          },
+          "host grouping": {
+            "ms": 7.0,
+            "percent": 1.1
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 190.0,
+            "percent": 31.6
+          },
+          "gemm gate/up": {
+            "ms": 172.0,
+            "percent": 28.7
+          },
+          "gemm down": {
+            "ms": 98.0,
+            "percent": 16.4
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.6
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.6
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.0
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.7
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 9.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 21.0
+        }
+      },
+      {
+        "line": 73,
+        "tokens": 505,
+        "gpu_ms": 600.0,
+        "wall_ms": 602.0,
+        "host_staging_ms": 13.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.7
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.4
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.0
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 23.0,
+            "percent": 3.8
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.3
+          },
+          "host grouping": {
+            "ms": 7.0,
+            "percent": 1.2
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 189.0,
+            "percent": 31.5
+          },
+          "gemm gate/up": {
+            "ms": 172.0,
+            "percent": 28.6
+          },
+          "gemm down": {
+            "ms": 99.0,
+            "percent": 16.5
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.6
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.6
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.0
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.7
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 9.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 21.0
+        }
+      },
+      {
+        "line": 77,
+        "tokens": 4088,
+        "gpu_ms": 2707.0,
+        "wall_ms": 2714.0,
+        "host_staging_ms": 18.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 1.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 157.0,
+            "percent": 5.8
+          },
+          "gdn": {
+            "ms": 136.0,
+            "percent": 5.0
+          },
+          "qsa proj": {
+            "ms": 80.0,
+            "percent": 3.0
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 15.0,
+            "percent": 0.5
+          },
+          "qsa attn": {
+            "ms": 712.0,
+            "percent": 26.3
+          },
+          "router+shared": {
+            "ms": 30.0,
+            "percent": 1.1
+          },
+          "host grouping": {
+            "ms": 16.0,
+            "percent": 0.6
+          },
+          "gather": {
+            "ms": 30.0,
+            "percent": 1.1
+          },
+          "wait copy": {
+            "ms": 7.0,
+            "percent": 0.3
+          },
+          "dequant": {
+            "ms": 291.0,
+            "percent": 10.8
+          },
+          "gemm gate/up": {
+            "ms": 567.0,
+            "percent": 20.9
+          },
+          "gemm down": {
+            "ms": 304.0,
+            "percent": 11.2
+          },
+          "combine": {
+            "ms": 78.0,
+            "percent": 2.9
+          },
+          "ple": {
+            "ms": 7.0,
+            "percent": 0.3
+          },
+          "gdn conv+gates": {
+            "ms": 30.0,
+            "percent": 1.1
+          },
+          "gdn recurrence": {
+            "ms": 176.0,
+            "percent": 6.5
+          },
+          "gdn out proj": {
+            "ms": 70.0,
+            "percent": 2.6
+          }
+        },
+        "host": {
+          "setup_ms": 1.0,
+          "wait_ms": 20.0,
+          "after_chunk_ms": 7.0,
+          "ple_ms": 21.0
+        }
+      }
+    ],
+    "profile-on": [
+      {
+        "line": 40,
+        "tokens": 505,
+        "gpu_ms": 1076.0,
+        "wall_ms": 1082.0,
+        "host_staging_ms": 0.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "hc read": {
+            "ms": 319.0,
+            "percent": 29.6
+          },
+          "gdn": {
+            "ms": 215.0,
+            "percent": 19.9
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 1.1
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.0
+          },
+          "qsa attn": {
+            "ms": 3.0,
+            "percent": 0.2
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 0.7
+          },
+          "host grouping": {
+            "ms": 6.0,
+            "percent": 0.6
+          },
+          "gather": {
+            "ms": 5.0,
+            "percent": 0.5
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "dequant": {
+            "ms": 186.0,
+            "percent": 17.3
+          },
+          "gemm gate/up": {
+            "ms": 175.0,
+            "percent": 16.3
+          },
+          "gemm down": {
+            "ms": 102.0,
+            "percent": 9.4
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 0.9
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.4
+          },
+          "gdn recurrence": {
+            "ms": 19.0,
+            "percent": 1.7
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 0.9
+          }
+        },
+        "host": {
+          "setup_ms": 1.0,
+          "wait_ms": 9.0,
+          "after_chunk_ms": 4.0,
+          "ple_ms": 0.0
+        }
+      },
+      {
+        "line": 43,
+        "tokens": 505,
+        "gpu_ms": 572.0,
+        "wall_ms": 574.0,
+        "host_staging_ms": 1.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.9
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.5
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.1
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 3.0,
+            "percent": 0.5
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 7.0,
+            "percent": 1.2
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 186.0,
+            "percent": 32.4
+          },
+          "gemm gate/up": {
+            "ms": 170.0,
+            "percent": 29.7
+          },
+          "gemm down": {
+            "ms": 97.0,
+            "percent": 16.9
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.7
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.1
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.8
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 9.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 2.0
+        }
+      },
+      {
+        "line": 46,
+        "tokens": 505,
+        "gpu_ms": 577.0,
+        "wall_ms": 578.0,
+        "host_staging_ms": 1.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.9
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.5
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.1
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 3.0,
+            "percent": 0.4
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 7.0,
+            "percent": 1.2
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 188.0,
+            "percent": 32.6
+          },
+          "gemm gate/up": {
+            "ms": 170.0,
+            "percent": 29.6
+          },
+          "gemm down": {
+            "ms": 98.0,
+            "percent": 16.9
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.7
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.1
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.8
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 8.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 4.0
+        }
+      },
+      {
+        "line": 50,
+        "tokens": 4089,
+        "gpu_ms": 2100.0,
+        "wall_ms": 2108.0,
+        "host_staging_ms": 6.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 1.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 157.0,
+            "percent": 7.5
+          },
+          "gdn": {
+            "ms": 136.0,
+            "percent": 6.5
+          },
+          "qsa proj": {
+            "ms": 80.0,
+            "percent": 3.8
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 15.0,
+            "percent": 0.7
+          },
+          "qsa attn": {
+            "ms": 103.0,
+            "percent": 4.9
+          },
+          "router+shared": {
+            "ms": 30.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 14.0,
+            "percent": 0.7
+          },
+          "gather": {
+            "ms": 30.0,
+            "percent": 1.4
+          },
+          "wait copy": {
+            "ms": 7.0,
+            "percent": 0.3
+          },
+          "dequant": {
+            "ms": 289.0,
+            "percent": 13.8
+          },
+          "gemm gate/up": {
+            "ms": 571.0,
+            "percent": 27.2
+          },
+          "gemm down": {
+            "ms": 307.0,
+            "percent": 14.6
+          },
+          "combine": {
+            "ms": 78.0,
+            "percent": 3.7
+          },
+          "ple": {
+            "ms": 7.0,
+            "percent": 0.3
+          },
+          "gdn conv+gates": {
+            "ms": 30.0,
+            "percent": 1.4
+          },
+          "gdn recurrence": {
+            "ms": 176.0,
+            "percent": 8.4
+          },
+          "gdn out proj": {
+            "ms": 70.0,
+            "percent": 3.3
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 20.0,
+          "after_chunk_ms": 7.0,
+          "ple_ms": 18.0
+        }
+      },
+      {
+        "line": 53,
+        "tokens": 505,
+        "gpu_ms": 576.0,
+        "wall_ms": 577.0,
+        "host_staging_ms": 6.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.9
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.5
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.1
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 3.0,
+            "percent": 0.5
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 7.0,
+            "percent": 1.3
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 186.0,
+            "percent": 32.3
+          },
+          "gemm gate/up": {
+            "ms": 171.0,
+            "percent": 29.7
+          },
+          "gemm down": {
+            "ms": 98.0,
+            "percent": 17.1
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.7
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.2
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.8
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 9.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 18.0
+        }
+      },
+      {
+        "line": 56,
+        "tokens": 505,
+        "gpu_ms": 577.0,
+        "wall_ms": 578.0,
+        "host_staging_ms": 7.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.9
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.5
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.1
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 3.0,
+            "percent": 0.5
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 7.0,
+            "percent": 1.2
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 186.0,
+            "percent": 32.3
+          },
+          "gemm gate/up": {
+            "ms": 172.0,
+            "percent": 29.8
+          },
+          "gemm down": {
+            "ms": 98.0,
+            "percent": 17.1
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.7
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.2
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.8
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 9.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 18.0
+        }
+      },
+      {
+        "line": 59,
+        "tokens": 505,
+        "gpu_ms": 581.0,
+        "wall_ms": 583.0,
+        "host_staging_ms": 7.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.8
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.5
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.1
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 3.0,
+            "percent": 0.4
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 8.0,
+            "percent": 1.4
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 189.0,
+            "percent": 32.5
+          },
+          "gemm gate/up": {
+            "ms": 172.0,
+            "percent": 29.6
+          },
+          "gemm down": {
+            "ms": 98.0,
+            "percent": 16.9
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.7
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.1
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.7
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 8.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 18.0
+        }
+      },
+      {
+        "line": 63,
+        "tokens": 4089,
+        "gpu_ms": 2097.0,
+        "wall_ms": 2104.0,
+        "host_staging_ms": 12.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 3.0,
+            "percent": 0.1
+          },
+          "hc read": {
+            "ms": 157.0,
+            "percent": 7.5
+          },
+          "gdn": {
+            "ms": 134.0,
+            "percent": 6.4
+          },
+          "qsa proj": {
+            "ms": 80.0,
+            "percent": 3.8
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 15.0,
+            "percent": 0.7
+          },
+          "qsa attn": {
+            "ms": 104.0,
+            "percent": 4.9
+          },
+          "router+shared": {
+            "ms": 30.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 14.0,
+            "percent": 0.7
+          },
+          "gather": {
+            "ms": 30.0,
+            "percent": 1.4
+          },
+          "wait copy": {
+            "ms": 7.0,
+            "percent": 0.3
+          },
+          "dequant": {
+            "ms": 287.0,
+            "percent": 13.7
+          },
+          "gemm gate/up": {
+            "ms": 569.0,
+            "percent": 27.1
+          },
+          "gemm down": {
+            "ms": 305.0,
+            "percent": 14.6
+          },
+          "combine": {
+            "ms": 78.0,
+            "percent": 3.7
+          },
+          "ple": {
+            "ms": 7.0,
+            "percent": 0.3
+          },
+          "gdn conv+gates": {
+            "ms": 30.0,
+            "percent": 1.4
+          },
+          "gdn recurrence": {
+            "ms": 177.0,
+            "percent": 8.5
+          },
+          "gdn out proj": {
+            "ms": 70.0,
+            "percent": 3.3
+          }
+        },
+        "host": {
+          "setup_ms": 3.0,
+          "wait_ms": 20.0,
+          "after_chunk_ms": 7.0,
+          "ple_ms": 18.0
+        }
+      },
+      {
+        "line": 66,
+        "tokens": 505,
+        "gpu_ms": 579.0,
+        "wall_ms": 581.0,
+        "host_staging_ms": 13.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.9
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.5
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.0
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 3.0,
+            "percent": 0.5
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 8.0,
+            "percent": 1.3
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 188.0,
+            "percent": 32.4
+          },
+          "gemm gate/up": {
+            "ms": 172.0,
+            "percent": 29.7
+          },
+          "gemm down": {
+            "ms": 98.0,
+            "percent": 17.0
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.7
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.1
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.7
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 10.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 18.0
+        }
+      },
+      {
+        "line": 69,
+        "tokens": 505,
+        "gpu_ms": 583.0,
+        "wall_ms": 584.0,
+        "host_staging_ms": 14.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.8
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.5
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.0
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 3.0,
+            "percent": 0.4
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 8.0,
+            "percent": 1.4
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 191.0,
+            "percent": 32.7
+          },
+          "gemm gate/up": {
+            "ms": 173.0,
+            "percent": 29.6
+          },
+          "gemm down": {
+            "ms": 98.0,
+            "percent": 16.7
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.7
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.1
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.7
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 9.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 18.0
+        }
+      },
+      {
+        "line": 72,
+        "tokens": 505,
+        "gpu_ms": 583.0,
+        "wall_ms": 584.0,
+        "host_staging_ms": 14.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "hc read": {
+            "ms": 22.0,
+            "percent": 3.8
+          },
+          "gdn": {
+            "ms": 20.0,
+            "percent": 3.5
+          },
+          "qsa proj": {
+            "ms": 12.0,
+            "percent": 2.0
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "qsa attn": {
+            "ms": 3.0,
+            "percent": 0.4
+          },
+          "router+shared": {
+            "ms": 8.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 7.0,
+            "percent": 1.2
+          },
+          "gather": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "wait copy": {
+            "ms": 1.0,
+            "percent": 0.2
+          },
+          "dequant": {
+            "ms": 189.0,
+            "percent": 32.4
+          },
+          "gemm gate/up": {
+            "ms": 174.0,
+            "percent": 29.9
+          },
+          "gemm down": {
+            "ms": 99.0,
+            "percent": 17.0
+          },
+          "combine": {
+            "ms": 10.0,
+            "percent": 1.7
+          },
+          "ple": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "gdn conv+gates": {
+            "ms": 4.0,
+            "percent": 0.7
+          },
+          "gdn recurrence": {
+            "ms": 18.0,
+            "percent": 3.1
+          },
+          "gdn out proj": {
+            "ms": 10.0,
+            "percent": 1.7
+          }
+        },
+        "host": {
+          "setup_ms": 0.0,
+          "wait_ms": 9.0,
+          "after_chunk_ms": 1.0,
+          "ple_ms": 18.0
+        }
+      },
+      {
+        "line": 76,
+        "tokens": 4088,
+        "gpu_ms": 2098.0,
+        "wall_ms": 2106.0,
+        "host_staging_ms": 18.0,
+        "phases": {
+          "embed+steps": {
+            "ms": 1.0,
+            "percent": 0.1
+          },
+          "hc read": {
+            "ms": 157.0,
+            "percent": 7.5
+          },
+          "gdn": {
+            "ms": 131.0,
+            "percent": 6.2
+          },
+          "qsa proj": {
+            "ms": 79.0,
+            "percent": 3.8
+          },
+          "qsa indexer": {
+            "ms": 0.0,
+            "percent": 0.0
+          },
+          "qsa select": {
+            "ms": 15.0,
+            "percent": 0.7
+          },
+          "qsa attn": {
+            "ms": 106.0,
+            "percent": 5.0
+          },
+          "router+shared": {
+            "ms": 29.0,
+            "percent": 1.4
+          },
+          "host grouping": {
+            "ms": 14.0,
+            "percent": 0.7
+          },
+          "gather": {
+            "ms": 31.0,
+            "percent": 1.5
+          },
+          "wait copy": {
+            "ms": 7.0,
+            "percent": 0.3
+          },
+          "dequant": {
+            "ms": 290.0,
+            "percent": 13.8
+          },
+          "gemm gate/up": {
+            "ms": 570.0,
+            "percent": 27.2
+          },
+          "gemm down": {
+            "ms": 306.0,
+            "percent": 14.6
+          },
+          "combine": {
+            "ms": 78.0,
+            "percent": 3.7
+          },
+          "ple": {
+            "ms": 7.0,
+            "percent": 0.3
+          },
+          "gdn conv+gates": {
+            "ms": 30.0,
+            "percent": 1.4
+          },
+          "gdn recurrence": {
+            "ms": 179.0,
+            "percent": 8.5
+          },
+          "gdn out proj": {
+            "ms": 69.0,
+            "percent": 3.3
+          }
+        },
+        "host": {
+          "setup_ms": 1.0,
+          "wait_ms": 20.0,
+          "after_chunk_ms": 7.0,
+          "ple_ms": 19.0
+        }
+      }
+    ]
+  }
+}

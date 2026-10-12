@@ -1,0 +1,561 @@
+{
+  "note": "Small completed-output checks only; arms have different identifying prefixes, not a controlled quality equivalence test.",
+  "results": {
+    "portable-off": [
+      {
+        "kind": "multiply",
+        "reference_rows": 60,
+        "passed": true,
+        "expected": {
+          "answer": 391
+        },
+        "response": {
+          "id": "chatcmpl-b4eede838bda4a188e011a93",
+          "object": "chat.completion",
+          "created": 1791755397,
+          "model": "gyro-s-strata",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "{\"answer\": 391}"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 1249,
+            "completion_tokens": 9,
+            "total_tokens": 1258,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 1249,
+            "prompt_ms": 1024.0,
+            "prompt_per_token_ms": 0.82,
+            "prompt_per_second": 1219.7,
+            "predicted_n": 9,
+            "predicted_ms": 85.1,
+            "predicted_per_token_ms": 9.456,
+            "predicted_per_second": 105.8,
+            "draft_n": 6,
+            "draft_n_accepted": 6
+          }
+        }
+      },
+      {
+        "kind": "sort",
+        "reference_rows": 60,
+        "passed": true,
+        "expected": [
+          -3,
+          1,
+          2,
+          9
+        ],
+        "response": {
+          "id": "chatcmpl-5ac799ba38e34da38b1a2749",
+          "object": "chat.completion",
+          "created": 1791755398,
+          "model": "gyro-s-strata",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "```json\n[-3, 1, 2, 9]\n```"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 1247,
+            "completion_tokens": 18,
+            "total_tokens": 1265,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 1247,
+            "prompt_ms": 1007.6,
+            "prompt_per_token_ms": 0.808,
+            "prompt_per_second": 1237.6,
+            "predicted_n": 18,
+            "predicted_ms": 183.4,
+            "predicted_per_token_ms": 10.189,
+            "predicted_per_second": 98.1,
+            "draft_n": 15,
+            "draft_n_accepted": 14
+          }
+        }
+      },
+      {
+        "kind": "recall",
+        "reference_rows": 60,
+        "passed": true,
+        "expected": {
+          "code": "GYRO-7391"
+        },
+        "response": {
+          "id": "chatcmpl-ca40bd2ab68b4f67ab3c0b80",
+          "object": "chat.completion",
+          "created": 1791755399,
+          "model": "gyro-s-strata",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "{\"code\": \"GYRO-7391\"}"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 1243,
+            "completion_tokens": 13,
+            "total_tokens": 1256,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 1243,
+            "prompt_ms": 1008.1,
+            "prompt_per_token_ms": 0.811,
+            "prompt_per_second": 1233.0,
+            "predicted_n": 13,
+            "predicted_ms": 117.8,
+            "predicted_per_token_ms": 9.062,
+            "predicted_per_second": 110.4,
+            "draft_n": 9,
+            "draft_n_accepted": 9
+          }
+        }
+      },
+      {
+        "kind": "multiply",
+        "reference_rows": 550,
+        "passed": true,
+        "expected": {
+          "answer": 391
+        },
+        "response": {
+          "id": "chatcmpl-5ee4f4d15a1e481284ac15ee",
+          "object": "chat.completion",
+          "created": 1791755400,
+          "model": "gyro-s-strata",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "{\"answer\": 391}"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 11953,
+            "completion_tokens": 9,
+            "total_tokens": 11962,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 11953,
+            "prompt_ms": 7633.3,
+            "prompt_per_token_ms": 0.639,
+            "prompt_per_second": 1565.9,
+            "predicted_n": 9,
+            "predicted_ms": 87.5,
+            "predicted_per_token_ms": 9.722,
+            "predicted_per_second": 102.9,
+            "draft_n": 6,
+            "draft_n_accepted": 6
+          }
+        }
+      },
+      {
+        "kind": "sort",
+        "reference_rows": 550,
+        "passed": true,
+        "expected": [
+          -3,
+          1,
+          2,
+          9
+        ],
+        "response": {
+          "id": "chatcmpl-6c69b413a460490caf7b2515",
+          "object": "chat.completion",
+          "created": 1791755408,
+          "model": "gyro-s-strata",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "[-3, 1, 2, 9]"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 11951,
+            "completion_tokens": 13,
+            "total_tokens": 11964,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 11951,
+            "prompt_ms": 7624.6,
+            "prompt_per_token_ms": 0.638,
+            "prompt_per_second": 1567.4,
+            "predicted_n": 13,
+            "predicted_ms": 141.8,
+            "predicted_per_token_ms": 10.908,
+            "predicted_per_second": 91.7,
+            "draft_n": 9,
+            "draft_n_accepted": 9
+          }
+        }
+      },
+      {
+        "kind": "recall",
+        "reference_rows": 550,
+        "passed": true,
+        "expected": {
+          "code": "GYRO-7391"
+        },
+        "response": {
+          "id": "chatcmpl-0f5b00ede7a340749ceae483",
+          "object": "chat.completion",
+          "created": 1791755416,
+          "model": "gyro-s-strata",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "{\"code\": \"GYRO-7391\"}"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 11947,
+            "completion_tokens": 13,
+            "total_tokens": 11960,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 11947,
+            "prompt_ms": 7634.1,
+            "prompt_per_token_ms": 0.639,
+            "prompt_per_second": 1565.0,
+            "predicted_n": 13,
+            "predicted_ms": 137.1,
+            "predicted_per_token_ms": 10.546,
+            "predicted_per_second": 94.8,
+            "draft_n": 8,
+            "draft_n_accepted": 8
+          }
+        }
+      }
+    ],
+    "portable-on": [
+      {
+        "kind": "multiply",
+        "reference_rows": 60,
+        "passed": true,
+        "expected": {
+          "answer": 391
+        },
+        "response": {
+          "id": "chatcmpl-70b1a1dff183479b9ffa171d",
+          "object": "chat.completion",
+          "created": 1791755463,
+          "model": "gyro-s-strata",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "{\"answer\": 391}"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 1249,
+            "completion_tokens": 9,
+            "total_tokens": 1258,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 1249,
+            "prompt_ms": 939.6,
+            "prompt_per_token_ms": 0.752,
+            "prompt_per_second": 1329.3,
+            "predicted_n": 9,
+            "predicted_ms": 85.1,
+            "predicted_per_token_ms": 9.456,
+            "predicted_per_second": 105.8,
+            "draft_n": 6,
+            "draft_n_accepted": 6
+          }
+        }
+      },
+      {
+        "kind": "sort",
+        "reference_rows": 60,
+        "passed": true,
+        "expected": [
+          -3,
+          1,
+          2,
+          9
+        ],
+        "response": {
+          "id": "chatcmpl-fb3f673636f6441ba7a4b2bc",
+          "object": "chat.completion",
+          "created": 1791755464,
+          "model": "gyro-s-strata",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "```json\n[-3, 1, 2, 9]\n```"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 1247,
+            "completion_tokens": 18,
+            "total_tokens": 1265,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 1247,
+            "prompt_ms": 922.9,
+            "prompt_per_token_ms": 0.74,
+            "prompt_per_second": 1351.2,
+            "predicted_n": 18,
+            "predicted_ms": 186.2,
+            "predicted_per_token_ms": 10.344,
+            "predicted_per_second": 96.7,
+            "draft_n": 15,
+            "draft_n_accepted": 14
+          }
+        }
+      },
+      {
+        "kind": "recall",
+        "reference_rows": 60,
+        "passed": true,
+        "expected": {
+          "code": "GYRO-7391"
+        },
+        "response": {
+          "id": "chatcmpl-3605d4ab38734989827c0989",
+          "object": "chat.completion",
+          "created": 1791755465,
+          "model": "gyro-s-strata",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "{\"code\": \"GYRO-7391\"}"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 1243,
+            "completion_tokens": 13,
+            "total_tokens": 1256,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 1243,
+            "prompt_ms": 922.0,
+            "prompt_per_token_ms": 0.742,
+            "prompt_per_second": 1348.2,
+            "predicted_n": 13,
+            "predicted_ms": 118.3,
+            "predicted_per_token_ms": 9.1,
+            "predicted_per_second": 109.9,
+            "draft_n": 9,
+            "draft_n_accepted": 9
+          }
+        }
+      },
+      {
+        "kind": "multiply",
+        "reference_rows": 550,
+        "passed": true,
+        "expected": {
+          "answer": 391
+        },
+        "response": {
+          "id": "chatcmpl-152b3c3b5f46479eac6840ad",
+          "object": "chat.completion",
+          "created": 1791755466,
+          "model": "gyro-s-strata",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "{\"answer\": 391}"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 11953,
+            "completion_tokens": 9,
+            "total_tokens": 11962,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 11953,
+            "prompt_ms": 5482.7,
+            "prompt_per_token_ms": 0.459,
+            "prompt_per_second": 2180.1,
+            "predicted_n": 9,
+            "predicted_ms": 87.8,
+            "predicted_per_token_ms": 9.756,
+            "predicted_per_second": 102.5,
+            "draft_n": 6,
+            "draft_n_accepted": 6
+          }
+        }
+      },
+      {
+        "kind": "sort",
+        "reference_rows": 550,
+        "passed": true,
+        "expected": [
+          -3,
+          1,
+          2,
+          9
+        ],
+        "response": {
+          "id": "chatcmpl-982b7790598c4bfd88084df8",
+          "object": "chat.completion",
+          "created": 1791755472,
+          "model": "gyro-s-strata",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "[-3, 1, 2, 9]"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 11951,
+            "completion_tokens": 13,
+            "total_tokens": 11964,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 11951,
+            "prompt_ms": 5476.8,
+            "prompt_per_token_ms": 0.458,
+            "prompt_per_second": 2182.1,
+            "predicted_n": 13,
+            "predicted_ms": 141.8,
+            "predicted_per_token_ms": 10.908,
+            "predicted_per_second": 91.7,
+            "draft_n": 9,
+            "draft_n_accepted": 9
+          }
+        }
+      },
+      {
+        "kind": "recall",
+        "reference_rows": 550,
+        "passed": true,
+        "expected": {
+          "code": "GYRO-7391"
+        },
+        "response": {
+          "id": "chatcmpl-325006ee0b9e4f4bb3edfd72",
+          "object": "chat.completion",
+          "created": 1791755477,
+          "model": "gyro-s-strata",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "{\"code\": \"GYRO-7391\"}"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 11947,
+            "completion_tokens": 13,
+            "total_tokens": 11960,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 11947,
+            "prompt_ms": 5473.8,
+            "prompt_per_token_ms": 0.458,
+            "prompt_per_second": 2182.6,
+            "predicted_n": 13,
+            "predicted_ms": 121.2,
+            "predicted_per_token_ms": 9.323,
+            "predicted_per_second": 107.3,
+            "draft_n": 9,
+            "draft_n_accepted": 9
+          }
+        }
+      }
+    ]
+  }
+}
