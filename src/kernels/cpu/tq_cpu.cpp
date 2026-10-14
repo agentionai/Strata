@@ -89,8 +89,12 @@ int tq_kbits(int t) noexcept { return t == 144 ? 8 : t == 145 ? 6 : t == 146 ? 7
 
 bool tq_isa_ok(TqIsa isa) {
     switch (isa) {
+#if defined(__x86_64__) || defined(_M_X64)
         case TqIsa::avx512: return cpu_avx512_ok();
         case TqIsa::avx2: return cpu_avx2_ok();
+#else
+        case TqIsa::avx512: case TqIsa::avx2: return false;
+#endif
         default: return true;
     }
 }
@@ -158,8 +162,10 @@ ActSet& unpack_all(const void* const* act, int n, int nt) {
 void rows_on(TqIsa isa, int kb, const uint8_t* w, size_t row_bytes, int n, const tq_detail::TqAct* const* a, int nt,
              float* const* out, int r0, int r1) {
     switch (isa) {
+#if defined(__x86_64__) || defined(_M_X64)
         case TqIsa::avx512: tq_detail::tq_rows_avx512(kb, w, row_bytes, n, a, nt, out, r0, r1); break;
         case TqIsa::avx2: tq_detail::tq_rows_avx2(kb, w, row_bytes, n, a, nt, out, r0, r1); break;
+#endif
         default: tq_detail::tq_rows_scalar(kb, w, row_bytes, n, a, nt, out, r0, r1); break;
     }
 }

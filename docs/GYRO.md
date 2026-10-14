@@ -19,17 +19,19 @@ Qwen3.8-Flash-Next models. It is not the GGUF draft file from the Gyro repositor
 
 ## Quick setup
 
-Gyro support lives on the `rc2` branch of the agentionai Strata fork: Strata v0.1.40.3 plus the trellis types
-(TQ2_T / TQK6 / TQK7), the Hadamard rotation and the CPU trellis kernels.
+Gyro support lives on the `rc2` branch of the agentionai Strata fork. The Apple Silicon port combines its trellis
+formats (TQ2_T / TQK6 / TQK7), Hadamard rotation and CPU kernels with upstream Strata v0.1.44.1's Metal engine.
 
 ```sh
 git clone -b rc2 https://github.com/agentionai/Strata
 cd Strata
 ```
 
-`tools/gyro_setup.sh` does every step below on Linux:
+`tools/gyro_setup.sh` builds, downloads, packs and writes a server config on Linux or an Apple Silicon Mac:
 
 ```sh
+tools/gyro_setup.sh --model S --backend metal                     # Apple Silicon, macOS 15+
+tools/gyro_setup.sh --model S --backend metal --variant huihui    # Huihui abliterated Gyro
 tools/gyro_setup.sh --model S --backend cuda --cuda-arch 120       # RTX 50 series
 tools/gyro_setup.sh --model S --backend cuda --cuda-arch 89        # RTX 40 series
 tools/gyro_setup.sh --model S --backend cuda --cuda-arch 86        # RTX 30 series / RTX A6000
@@ -37,6 +39,72 @@ tools/gyro_setup.sh --model S --backend hip  --hip-arch gfx1201    # Radeon RX 9
 ```
 
 It prints the command that starts the server. The steps, by hand:
+
+## Apple Silicon
+
+Use `--backend metal` on macOS 15 or newer, an M1 or newer, with the Command Line Tools installed and Python 3.10
+or newer. It builds `build-metal/strata` with Apple's metal-cpp headers and the agentionai llama.cpp fork (a new
+checkout is pinned to `dc255f2a4b6e4211b555b0c05260b2523281f314`; `--llama DIR` keeps an existing checkout).
+`--variant huihui` selects `agentionai/Qwen3.8-Flash-Next-Gyro-abliterated-Huihui-GGUF` and uses a separate
+`gyro-s-huihui` / `gyro-m-huihui` pack and config, so the two variants can coexist.
+The ordinary Mac installer still offers its existing model families; use the Gyro setup command above for these files.
+
+The setup writes a page-aligned `<model>-metal.gguf` containing the dense weights and experts, with each tensor
+checked by SHA-256 against the download. It preserves the `prism.hadamard.*` metadata. The n-gram table stays in
+the original download, passed separately as `--ple-gguf`. Keep both files. Packing uses the Metal file so every
+expert offset matches the file the engine maps or streams.
+
+Both the decode kernels and the two prompt GEMM implementations decode the trellis formats from the canonical
+FP16 Hyb codebook. The Hadamard kernels rotate only routed inputs, before gate/up and before down; shared experts
+and routing read their original inputs. Decode rotates FP32. Prompt operands are FP16; the butterflies run in
+FP32 and round on the final store. Identity signs, explicit signs, per-layer roles and disk-streamed experts use
+the same paths. A mismatched or missing Hadamard pack is refused. The fused HC reader also handles Gyro's mixed
+Q6_K down/inject and Q8_0 up matrices: it dequantizes the former and prepares Q8_0 copies at load time.
+`STRATA_HC_Q8=0` prepares BF16 copies for the BF16 reader instead. The Mac's arena and memory limits are described
+in [MAC.md](MAC.md).
+
+Synthetic validation on an M5 Max (128 GB, macOS 26.6, Apple clang 21): both Gyro-S and Gyro-M format pairs,
+windows of 1/4/8 tokens, four-chunk expert arenas, prompt v2/v3, signed Hadamard prompt operands, and the ARM CPU
+path against the fork's GGML graph. The reference trellis dequantizers match GGML bit for bit. Ordinary Q2_0
+decode output matched upstream byte for byte (same synthetic four-token input). These checks do not establish
+speed or full-model token parity against llama.cpp. M1-M4 and Gyro-M full-model runs have not been measured.
+
+Full-model smoke checks on that Mac (2026-10-13) used the requested Huihui Gyro-S file
+(`Qwen3.8-Flash-Next-Gyro-S-abliterated-TQ1_0.gguf`, SHA-256
+`783e1af72859c48146162840f1a2173922c03e4befaeea4add7578ad25c303a3`). The repack's 1,223 tensors matched the source
+bytes. The engine answered "The capital of France is Paris." and recalled "SILICON" from a 234-token prompt.
+The local OpenAI-compatible chat API also answered correctly. These were smoke checks at 4K context without an
+MTP draft layer, not a speed or quality benchmark. The original Gyro-S file also passed these generation checks,
+and a forced 4 GB expert arena matched its resident short-prompt tokens (48 generated tokens, prompt chunks 128).
+
+The same Huihui Gyro-S also passed a resident MTP/context sweep on that Mac, with 131,072-token capacity,
+INT8 KV, greedy decoding, `--spec 2 --spec-min-p 0.5 --suffix-draft 0`. Every run generated 256 prose tokens;
+these are single fresh-process measurements, not medians. MTP used Strata's Q2_0 draft head from the pinned
+original checkpoint (all 31 source tensors verified).
+
+| Input tokens | MTP decode tokens/s | Prompt tokens/s |
+|---:|---:|---:|
+| 4,096 | 75.48 | 1,201.67 |
+| 32,768 | 70.10 | 1,127.06 |
+| 65,536 | 65.17 | 1,095.35 |
+| 130,816 | 61.85 | 1,024.08 |
+
+The top run filled the context with 130,816 input tokens plus 256 generated tokens. All 256 outputs matched
+the no-MTP reference at short, 4K and full context; the full-context no-MTP reference measured 38.77 tokens/s
+while draft preparation was still finishing, so its absolute timing is approximate. A short API request also
+passed with MTP and 128K capacity configured. These checks do not establish long-context recall or quality;
+see the [report and raw timings](../bench/results/2026-10-13-community-m5-max-huihui-gyro/README.md).
+
+To run the synthetic checks (after setup has obtained both header dependencies):
+
+```sh
+cmake -S metal -B build-metal -DMETAL_CPP_DIR="$PWD/third_party/metal-cpp" \
+  -DSTRATA_GGML_DIR="$PWD/../agention-llama.cpp" -DSTRATA_METAL_GYRO_TESTS=ON
+cmake --build build-metal -j
+ctest --test-dir build-metal --output-on-failure
+```
+
+The remaining manual build instructions are for NVIDIA/AMD. On a Mac use the Metal setup command above.
 
 ## 1. Build
 
