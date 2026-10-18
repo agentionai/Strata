@@ -43,12 +43,38 @@ void rows_t(const uint8_t* w, size_t row_bytes, int n, const TqAct* const* a, in
             const uint8_t* qs = blk + 2;
             const uint64_t wr = tq_wrap<KB>(qs);
             __m256i wv[8];   // wv[m] = weights 16m .. 16m+15 (states 4m .. 4m+3)
+#if defined(_MSC_VER)
+            // MSVC does not act on the GCC unroll pragma below and keeps t = 4m + j a runtime value in
+            // the loop, so inside tq_state the `b + 4 <= NB ?` choice and the shift amount stay in the
+            // inner loop.  Written out, every index is a compile-time constant and both fold to an
+            // immediate load offset and a constant shift: measured on MSVC 14.44 / i7-14700HX (no
+            // AVX-512) 69.5 -> 35.7 ticks per block at K = 6, 83.4 -> 34.6 at K = 7, 57.9 -> 38.9 at
+            // K = 8, and nt = 1..8 all faster (nt = 8 by 35%).  The results are bit-identical: same 32
+            // states, same order, the same integer dot and the same float accumulation.
+            wv[0] = rows4(tab, tq_state<KB>(qs, wr, 0), tq_state<KB>(qs, wr, 1), tq_state<KB>(qs, wr, 2),
+                          tq_state<KB>(qs, wr, 3));
+            wv[1] = rows4(tab, tq_state<KB>(qs, wr, 4), tq_state<KB>(qs, wr, 5), tq_state<KB>(qs, wr, 6),
+                          tq_state<KB>(qs, wr, 7));
+            wv[2] = rows4(tab, tq_state<KB>(qs, wr, 8), tq_state<KB>(qs, wr, 9), tq_state<KB>(qs, wr, 10),
+                          tq_state<KB>(qs, wr, 11));
+            wv[3] = rows4(tab, tq_state<KB>(qs, wr, 12), tq_state<KB>(qs, wr, 13), tq_state<KB>(qs, wr, 14),
+                          tq_state<KB>(qs, wr, 15));
+            wv[4] = rows4(tab, tq_state<KB>(qs, wr, 16), tq_state<KB>(qs, wr, 17), tq_state<KB>(qs, wr, 18),
+                          tq_state<KB>(qs, wr, 19));
+            wv[5] = rows4(tab, tq_state<KB>(qs, wr, 20), tq_state<KB>(qs, wr, 21), tq_state<KB>(qs, wr, 22),
+                          tq_state<KB>(qs, wr, 23));
+            wv[6] = rows4(tab, tq_state<KB>(qs, wr, 24), tq_state<KB>(qs, wr, 25), tq_state<KB>(qs, wr, 26),
+                          tq_state<KB>(qs, wr, 27));
+            wv[7] = rows4(tab, tq_state<KB>(qs, wr, 28), tq_state<KB>(qs, wr, 29), tq_state<KB>(qs, wr, 30),
+                          tq_state<KB>(qs, wr, 31));
+#else
 #if defined(__GNUC__)
 #pragma GCC unroll 8
 #endif
             for (int m = 0; m < 8; ++m)
                 wv[m] = rows4(tab, tq_state<KB>(qs, wr, 4 * m), tq_state<KB>(qs, wr, 4 * m + 1),
                               tq_state<KB>(qs, wr, 4 * m + 2), tq_state<KB>(qs, wr, 4 * m + 3));
+#endif
             const __m128 dx = _mm_set1_ps(tq_half_to_float(tq_ld16(blk)));
             for (int t = 0; t < nt; ++t) {
                 const __m256i* q = (const __m256i*) (a[t]->q + 128 * i);
